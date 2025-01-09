@@ -1,4 +1,3 @@
-// signup_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,13 +36,15 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // エラー表示
-              if (authState.errorMessage != null) ...[
-                Text(
-                  authState.errorMessage!,
-                  style: TextStyle(color: Colors.red, fontSize: 14.sp),
+              if (authState.errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    authState.errorMessage!,
+                    style: const TextStyle(color: Colors.red, fontSize: 14),
+                  ),
                 ),
-                SizedBox(height: 16.h),
-              ],
+              SizedBox(height: 16.h),
 
               // メールアドレス入力
               TextField(
@@ -85,6 +86,16 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
               : () async {
                   final email = emailController.text.trim();
                   final password = passwordController.text.trim();
+
+                  // 入力バリデーション
+                  if (email.isEmpty || !email.contains('@')) {
+                    ref.read(authViewModelProvider.notifier).setErrorMessage('正しいメールアドレスを入力してください。');
+                    return;
+                  }
+                  if (password.isEmpty || password.length < 6) {
+                    ref.read(authViewModelProvider.notifier).setErrorMessage('パスワードは6文字以上で入力してください。');
+                    return;
+                  }
 
                   await ref
                       .read(authViewModelProvider.notifier)

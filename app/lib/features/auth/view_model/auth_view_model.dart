@@ -35,15 +35,21 @@ class AuthViewModel extends StateNotifier<AuthState> {
         // 正常登録
         state = state.copyWith(isLoading: false);
       } else {
-        // エラーが返ってきた場合
-        final decoded = jsonDecode(response.body);
-        final error = decoded['detail'] ?? '登録に失敗しました';
-        throw Exception(error);
+        // UTF-8でレスポンスをデコード
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+
+        if (decoded['detail'] is List) {
+          // エラーリストを結合して表示
+          final errorMessages = (decoded['detail'] as List).join("\n");
+          throw Exception(errorMessages);
+        } else {
+          throw Exception(decoded['detail'] ?? '登録に失敗しました');
+        }
       }
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: e.toString(),
+        errorMessage: e.toString().replaceAll("Exception: ", ""),
       );
     }
   }
@@ -77,5 +83,13 @@ class AuthViewModel extends StateNotifier<AuthState> {
         errorMessage: 'エラーが発生しました。もう一度お試しください。',
       );
     }
+  }
+
+  void resetErrorMessage() {
+    state = state.copyWith(errorMessage: null);
+  }
+
+  void setErrorMessage(String message) {
+    state = state.copyWith(errorMessage: message);
   }
 }
