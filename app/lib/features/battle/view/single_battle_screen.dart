@@ -3,7 +3,9 @@ import 'package:app/features/battle/view/character_change_screen.dart';
 import 'package:app/features/battle/view/battle_result_screen.dart';
 
 class SingleBattleScreen extends StatelessWidget {
-  const SingleBattleScreen({super.key});
+    final int pattern;
+
+  const SingleBattleScreen({super.key, required this.pattern});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,6 @@ class SingleBattleScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // キャラクター画像枠
           Container(
             height: MediaQuery.of(context).size.height * 0.7,
             margin: const EdgeInsets.all(16.0),
@@ -34,7 +35,6 @@ class SingleBattleScreen extends StatelessWidget {
                   right: 16,
                   child: ElevatedButton(
                     onPressed: () {
-                      // キャラクター変更ページに遷移
                       Navigator.push(
                         context,
                         MaterialPageRoute(
