@@ -6,7 +6,6 @@ class BattleResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ランダムで勝利または敗北を決定
     final bool isVictory = Random().nextBool();
     final String resultText = isVictory ? '勝利' : '敗北';
     final Color resultColor = isVictory ? Colors.green : Colors.red;
@@ -17,9 +16,8 @@ class BattleResultScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // 勝利/敗北テキスト表示枠
           Container(
-            height: MediaQuery.of(context).size.height * 0.25, // 縦幅の1/4
+            height: MediaQuery.of(context).size.height * 0.25,
             margin: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: resultColor.withOpacity(0.1),
@@ -38,7 +36,6 @@ class BattleResultScreen extends StatelessWidget {
             ),
           ),
 
-          // 対戦内容テキスト表示枠
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -60,7 +57,6 @@ class BattleResultScreen extends StatelessWidget {
             ),
           ),
 
-          // 選択画面に戻るボタン
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
@@ -71,7 +67,6 @@ class BattleResultScreen extends StatelessWidget {
                   textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {
-                  // 選択画面に戻る
                   Navigator.pop(context);
                 },
                 child: const Text('選択画面に戻る'),

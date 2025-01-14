@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:app/features/battle/view/single_battle_screen.dart';
 import 'package:app/features/battle/view/tournament_screen.dart';
+import 'package:app/features/battle/view/single_battle_patterns_screen.dart';
 
 class BattleTab extends StatelessWidget {
   const BattleTab({super.key});
@@ -17,7 +17,7 @@ class BattleTab extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SingleBattleScreen(),
+                    builder: (context) => const SingleBattlePatternsScreen(),
                   ),
                 );
               },
