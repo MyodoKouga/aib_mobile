@@ -12,11 +12,13 @@ class SignupDialog extends ConsumerStatefulWidget {
 }
 
 class _SignupDialogState extends ConsumerState<SignupDialog> {
+  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   void dispose() {
+    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -44,6 +46,14 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                     style: const TextStyle(color: Colors.red, fontSize: 14),
                   ),
                 ),
+
+              // ユーザー名入力
+              TextField(
+                controller: usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'ユーザー名',
+                ),
+              ),
               SizedBox(height: 16.h),
 
               // メールアドレス入力
@@ -84,10 +94,15 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
           onPressed: authState.isLoading
               ? null
               : () async {
+                  final username = usernameController.text.trim();
                   final email = emailController.text.trim();
                   final password = passwordController.text.trim();
 
                   // 入力バリデーション
+                  if (username.isEmpty) {
+                    ref.read(authViewModelProvider.notifier).setErrorMessage('ユーザー名を入力してください。');
+                    return;
+                  }
                   if (email.isEmpty || !email.contains('@')) {
                     ref.read(authViewModelProvider.notifier).setErrorMessage('正しいメールアドレスを入力してください。');
                     return;
@@ -99,7 +114,7 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
 
                   await ref
                       .read(authViewModelProvider.notifier)
-                      .signUpWithEmail(email, password);
+                      .signUpWithUsernameEmailAndPassword(username, email, password);
 
                   // 登録が成功したかをチェック
                   final updatedState = ref.read(authViewModelProvider);

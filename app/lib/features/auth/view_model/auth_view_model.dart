@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../model/auth_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final authViewModelProvider = StateNotifierProvider<AuthViewModel, AuthState>((ref) {
   return AuthViewModel();
@@ -11,7 +12,7 @@ class AuthViewModel extends StateNotifier<AuthState> {
   AuthViewModel() : super(const AuthState());
 
   /// ユーザー登録
-  Future<void> signUpWithEmail(String email, String password) async {
+  Future<void> signUpWithUsernameEmailAndPassword(String username, String email, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       // バックエンドAPIのURL
@@ -19,6 +20,7 @@ class AuthViewModel extends StateNotifier<AuthState> {
 
       // リクエストボディを作成
       final requestBody = jsonEncode({
+        'username': username,
         'email': email,
         'password': password,
       });
@@ -32,7 +34,17 @@ class AuthViewModel extends StateNotifier<AuthState> {
       );
 
       if (response.statusCode == 200) {
-        // 正常登録
+        // 登録成功
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+        final prefs = await SharedPreferences.getInstance();
+
+        // ユーザー情報を保存
+        await prefs.setString('username', username);
+        await prefs.setString('email', email);
+        if (decoded.containsKey('accessToken')) {
+          await prefs.setString('accessToken', decoded['accessToken']);
+        }
+
         state = state.copyWith(isLoading: false);
       } else {
         // UTF-8でレスポンスをデコード
@@ -52,6 +64,16 @@ class AuthViewModel extends StateNotifier<AuthState> {
         errorMessage: e.toString().replaceAll("Exception: ", ""),
       );
     }
+  }
+
+  /// ユーザー情報の取得
+  Future<Map<String, String>> getUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'username': prefs.getString('username') ?? '',
+      'email': prefs.getString('email') ?? '',
+      'accessToken': prefs.getString('accessToken') ?? '',
+    };
   }
 
   /// 既存のサインイン
