@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/features/auth/view/auth_screen.dart';
 import 'package:app/features/onboarding/view_model/onboarding_view_model.dart';
-import 'package:app/features/onboarding/model/onboarding_content.dart';
 import 'package:app/features/onboarding/view/onboarding_page.dart';
+import 'package:app/features/onboarding/model/onboarding_content.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
