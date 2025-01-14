@@ -22,6 +22,9 @@ dependencies:
   flutter_riverpod: ^2.4.9
   flutter_screenutil: ^5.9.0
   freezed_annotation: ^2.4.1
+  http: ^0.13.6
+  flutter_secure_storage: ^4.2.1
+  shared_preferences: ^2.3.5
 
 dev_dependencies:
   flutter_test:
