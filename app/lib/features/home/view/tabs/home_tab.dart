@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app/features/home/view_model/home_view_model.dart';
+import 'package:app/features/create/view/select_char_pattern_screen.dart';
 
 class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
@@ -56,7 +57,12 @@ class HomeTab extends ConsumerWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // TODO: キャラクター作成画面への遷移
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SelectCharPatternScreen(),
+                  ),
+                );
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 12.h),
