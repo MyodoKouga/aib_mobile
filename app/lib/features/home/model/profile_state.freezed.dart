@@ -21,7 +21,20 @@ mixin _$ProfileState {
   String get bio => throw _privateConstructorUsedError; // 自己紹介文
   String get avatarUrl => throw _privateConstructorUsedError; // プロフィール画像URL
   bool get isLoading => throw _privateConstructorUsedError; // 読み込み中の状態
-  String? get errorMessage => throw _privateConstructorUsedError;
+  String? get errorMessage => throw _privateConstructorUsedError; // エラーメッセージ
+  bool get isGuest => throw _privateConstructorUsedError; // ゲストユーザーかどうか
+  bool get isEmailVerified => throw _privateConstructorUsedError; // メール認証済みかどうか
+  bool get isProfileComplete =>
+      throw _privateConstructorUsedError; // プロフィール情報が完全かどうか
+  DateTime? get lastUpdated =>
+      throw _privateConstructorUsedError; // プロフィールの最終更新日時
+  Map<String, dynamic> get preferences =>
+      throw _privateConstructorUsedError; // ユーザー設定情報
+  bool get isUploadingImage =>
+      throw _privateConstructorUsedError; // 画像アップロード中かどうか
+  String? get imageUploadError =>
+      throw _privateConstructorUsedError; // 画像アップロード時のエラーメッセージ
+  int get uploadProgress => throw _privateConstructorUsedError;
 
   /// Create a copy of ProfileState
   /// with the given fields replaced by the non-null parameter values.
@@ -42,7 +55,15 @@ abstract class $ProfileStateCopyWith<$Res> {
       String bio,
       String avatarUrl,
       bool isLoading,
-      String? errorMessage});
+      String? errorMessage,
+      bool isGuest,
+      bool isEmailVerified,
+      bool isProfileComplete,
+      DateTime? lastUpdated,
+      Map<String, dynamic> preferences,
+      bool isUploadingImage,
+      String? imageUploadError,
+      int uploadProgress});
 }
 
 /// @nodoc
@@ -66,6 +87,14 @@ class _$ProfileStateCopyWithImpl<$Res, $Val extends ProfileState>
     Object? avatarUrl = null,
     Object? isLoading = null,
     Object? errorMessage = freezed,
+    Object? isGuest = null,
+    Object? isEmailVerified = null,
+    Object? isProfileComplete = null,
+    Object? lastUpdated = freezed,
+    Object? preferences = null,
+    Object? isUploadingImage = null,
+    Object? imageUploadError = freezed,
+    Object? uploadProgress = null,
   }) {
     return _then(_value.copyWith(
       username: null == username
@@ -92,6 +121,38 @@ class _$ProfileStateCopyWithImpl<$Res, $Val extends ProfileState>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      isGuest: null == isGuest
+          ? _value.isGuest
+          : isGuest // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isEmailVerified: null == isEmailVerified
+          ? _value.isEmailVerified
+          : isEmailVerified // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isProfileComplete: null == isProfileComplete
+          ? _value.isProfileComplete
+          : isProfileComplete // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastUpdated: freezed == lastUpdated
+          ? _value.lastUpdated
+          : lastUpdated // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      preferences: null == preferences
+          ? _value.preferences
+          : preferences // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
+      isUploadingImage: null == isUploadingImage
+          ? _value.isUploadingImage
+          : isUploadingImage // ignore: cast_nullable_to_non_nullable
+              as bool,
+      imageUploadError: freezed == imageUploadError
+          ? _value.imageUploadError
+          : imageUploadError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      uploadProgress: null == uploadProgress
+          ? _value.uploadProgress
+          : uploadProgress // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -110,7 +171,15 @@ abstract class _$$ProfileStateImplCopyWith<$Res>
       String bio,
       String avatarUrl,
       bool isLoading,
-      String? errorMessage});
+      String? errorMessage,
+      bool isGuest,
+      bool isEmailVerified,
+      bool isProfileComplete,
+      DateTime? lastUpdated,
+      Map<String, dynamic> preferences,
+      bool isUploadingImage,
+      String? imageUploadError,
+      int uploadProgress});
 }
 
 /// @nodoc
@@ -132,6 +201,14 @@ class __$$ProfileStateImplCopyWithImpl<$Res>
     Object? avatarUrl = null,
     Object? isLoading = null,
     Object? errorMessage = freezed,
+    Object? isGuest = null,
+    Object? isEmailVerified = null,
+    Object? isProfileComplete = null,
+    Object? lastUpdated = freezed,
+    Object? preferences = null,
+    Object? isUploadingImage = null,
+    Object? imageUploadError = freezed,
+    Object? uploadProgress = null,
   }) {
     return _then(_$ProfileStateImpl(
       username: null == username
@@ -158,20 +235,62 @@ class __$$ProfileStateImplCopyWithImpl<$Res>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      isGuest: null == isGuest
+          ? _value.isGuest
+          : isGuest // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isEmailVerified: null == isEmailVerified
+          ? _value.isEmailVerified
+          : isEmailVerified // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isProfileComplete: null == isProfileComplete
+          ? _value.isProfileComplete
+          : isProfileComplete // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastUpdated: freezed == lastUpdated
+          ? _value.lastUpdated
+          : lastUpdated // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      preferences: null == preferences
+          ? _value._preferences
+          : preferences // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
+      isUploadingImage: null == isUploadingImage
+          ? _value.isUploadingImage
+          : isUploadingImage // ignore: cast_nullable_to_non_nullable
+              as bool,
+      imageUploadError: freezed == imageUploadError
+          ? _value.imageUploadError
+          : imageUploadError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      uploadProgress: null == uploadProgress
+          ? _value.uploadProgress
+          : uploadProgress // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
 
 /// @nodoc
 
-class _$ProfileStateImpl implements _ProfileState {
+class _$ProfileStateImpl extends _ProfileState {
   const _$ProfileStateImpl(
       {this.username = "",
       this.email = "",
       this.bio = "",
       this.avatarUrl = "",
       this.isLoading = false,
-      this.errorMessage});
+      this.errorMessage,
+      this.isGuest = false,
+      this.isEmailVerified = false,
+      this.isProfileComplete = false,
+      this.lastUpdated,
+      final Map<String, dynamic> preferences = const {},
+      this.isUploadingImage = false,
+      this.imageUploadError,
+      this.uploadProgress = 0})
+      : _preferences = preferences,
+        super._();
 
   @override
   @JsonKey()
@@ -195,10 +314,47 @@ class _$ProfileStateImpl implements _ProfileState {
 // 読み込み中の状態
   @override
   final String? errorMessage;
+// エラーメッセージ
+  @override
+  @JsonKey()
+  final bool isGuest;
+// ゲストユーザーかどうか
+  @override
+  @JsonKey()
+  final bool isEmailVerified;
+// メール認証済みかどうか
+  @override
+  @JsonKey()
+  final bool isProfileComplete;
+// プロフィール情報が完全かどうか
+  @override
+  final DateTime? lastUpdated;
+// プロフィールの最終更新日時
+  final Map<String, dynamic> _preferences;
+// プロフィールの最終更新日時
+  @override
+  @JsonKey()
+  Map<String, dynamic> get preferences {
+    if (_preferences is EqualUnmodifiableMapView) return _preferences;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_preferences);
+  }
+
+// ユーザー設定情報
+  @override
+  @JsonKey()
+  final bool isUploadingImage;
+// 画像アップロード中かどうか
+  @override
+  final String? imageUploadError;
+// 画像アップロード時のエラーメッセージ
+  @override
+  @JsonKey()
+  final int uploadProgress;
 
   @override
   String toString() {
-    return 'ProfileState(username: $username, email: $email, bio: $bio, avatarUrl: $avatarUrl, isLoading: $isLoading, errorMessage: $errorMessage)';
+    return 'ProfileState(username: $username, email: $email, bio: $bio, avatarUrl: $avatarUrl, isLoading: $isLoading, errorMessage: $errorMessage, isGuest: $isGuest, isEmailVerified: $isEmailVerified, isProfileComplete: $isProfileComplete, lastUpdated: $lastUpdated, preferences: $preferences, isUploadingImage: $isUploadingImage, imageUploadError: $imageUploadError, uploadProgress: $uploadProgress)';
   }
 
   @override
@@ -215,12 +371,41 @@ class _$ProfileStateImpl implements _ProfileState {
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                other.errorMessage == errorMessage) &&
+            (identical(other.isGuest, isGuest) || other.isGuest == isGuest) &&
+            (identical(other.isEmailVerified, isEmailVerified) ||
+                other.isEmailVerified == isEmailVerified) &&
+            (identical(other.isProfileComplete, isProfileComplete) ||
+                other.isProfileComplete == isProfileComplete) &&
+            (identical(other.lastUpdated, lastUpdated) ||
+                other.lastUpdated == lastUpdated) &&
+            const DeepCollectionEquality()
+                .equals(other._preferences, _preferences) &&
+            (identical(other.isUploadingImage, isUploadingImage) ||
+                other.isUploadingImage == isUploadingImage) &&
+            (identical(other.imageUploadError, imageUploadError) ||
+                other.imageUploadError == imageUploadError) &&
+            (identical(other.uploadProgress, uploadProgress) ||
+                other.uploadProgress == uploadProgress));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, username, email, bio, avatarUrl, isLoading, errorMessage);
+      runtimeType,
+      username,
+      email,
+      bio,
+      avatarUrl,
+      isLoading,
+      errorMessage,
+      isGuest,
+      isEmailVerified,
+      isProfileComplete,
+      lastUpdated,
+      const DeepCollectionEquality().hash(_preferences),
+      isUploadingImage,
+      imageUploadError,
+      uploadProgress);
 
   /// Create a copy of ProfileState
   /// with the given fields replaced by the non-null parameter values.
@@ -231,14 +416,23 @@ class _$ProfileStateImpl implements _ProfileState {
       __$$ProfileStateImplCopyWithImpl<_$ProfileStateImpl>(this, _$identity);
 }
 
-abstract class _ProfileState implements ProfileState {
+abstract class _ProfileState extends ProfileState {
   const factory _ProfileState(
       {final String username,
       final String email,
       final String bio,
       final String avatarUrl,
       final bool isLoading,
-      final String? errorMessage}) = _$ProfileStateImpl;
+      final String? errorMessage,
+      final bool isGuest,
+      final bool isEmailVerified,
+      final bool isProfileComplete,
+      final DateTime? lastUpdated,
+      final Map<String, dynamic> preferences,
+      final bool isUploadingImage,
+      final String? imageUploadError,
+      final int uploadProgress}) = _$ProfileStateImpl;
+  const _ProfileState._() : super._();
 
   @override
   String get username; // ユーザー名
@@ -251,7 +445,23 @@ abstract class _ProfileState implements ProfileState {
   @override
   bool get isLoading; // 読み込み中の状態
   @override
-  String? get errorMessage;
+  String? get errorMessage; // エラーメッセージ
+  @override
+  bool get isGuest; // ゲストユーザーかどうか
+  @override
+  bool get isEmailVerified; // メール認証済みかどうか
+  @override
+  bool get isProfileComplete; // プロフィール情報が完全かどうか
+  @override
+  DateTime? get lastUpdated; // プロフィールの最終更新日時
+  @override
+  Map<String, dynamic> get preferences; // ユーザー設定情報
+  @override
+  bool get isUploadingImage; // 画像アップロード中かどうか
+  @override
+  String? get imageUploadError; // 画像アップロード時のエラーメッセージ
+  @override
+  int get uploadProgress;
 
   /// Create a copy of ProfileState
   /// with the given fields replaced by the non-null parameter values.
