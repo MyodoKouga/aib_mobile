@@ -1,8 +1,12 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:app/features/home/model/home_state.dart';
 import 'package:app/features/home/view_model/home_view_model.dart';
 import 'package:app/features/create/view/select_char_pattern_screen.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 
 class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
@@ -12,144 +16,128 @@ class HomeTab extends ConsumerWidget {
     final homeState = ref.watch(homeViewModelProvider);
 
     if (homeState.errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              homeState.errorMessage!,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 14.sp,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            ElevatedButton(
-              onPressed: () {
-                ref.read(homeViewModelProvider.notifier).loadCharacters();
-              },
-              child: const Text('再試行'),
-            ),
-          ],
-        ),
-      );
+      return _buildErrorView(context, ref, homeState.errorMessage!);
     }
 
     return Stack(
       children: [
-        // 背景のコンテンツ（ボタン以外）
-        Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'マイキャラクター',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 16.h),
-              const Center(
-                child: Text('キャラクターがまだありません'),
-              ),
-              SizedBox(height: 16.h),
+        _buildMainContent(context),
+        if (homeState.showTutorialOverlay) _buildTutorialOverlay(),
+        _buildCreateButton(context, ref, homeState),
+      ],
+    );
+  }
 
-              SizedBox(
-                width: double.infinity,
-                child: Opacity(
-                  opacity: 0,
-                  child: ElevatedButton(
-                    onPressed: null,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      child: const Text('キャラクターを作成'),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+  Widget _buildErrorView(BuildContext context, WidgetRef ref, String error) {
+    return Center(
+      child: NeumorphicContainer(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              error,
+              style: TextStyle(color: Colors.red, fontSize: 14.sp),
+            ),
+            SizedBox(height: 16.h),
+            NeumorphicButton(
+              onPressed: () => ref.read(homeViewModelProvider.notifier).loadCharacters(),
+              child: const Text('再試行'),
+            ),
+          ],
         ),
+      ),
+    );
+  }
 
-        // チュートリアルのオーバーレイ
-        if (homeState.showTutorialOverlay)
-          Container(
-            color: Colors.black.withOpacity(0.7),
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'キャラクターを作成して\nAIバトルを始めましょう！',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+  Widget _buildMainContent(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16.w),
+      child: NeumorphicContainer(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'マイキャラクター',
+              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.h),
+            const Center(child: Text('キャラクターがまだありません')),
+            SizedBox(height: 16.h),
+            SizedBox(
+              width: double.infinity,
+              child: Opacity(opacity: 0, child: _buildHiddenButton()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHiddenButton() {
+    return NeumorphicButton(
+      onPressed: null,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: const Text('キャラクターを作成'),
+      ),
+    );
+  }
+
+  Widget _buildTutorialOverlay() {
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Container(
+          color: Colors.black.withOpacity(0.7),
+          child: Center(
+            child: NeumorphicContainer(
+              padding: EdgeInsets.all(16.w),
+              child: Text(
+                'キャラクターを作成して\nAIバトルを始めましょう！',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
 
-        // キャラクター作成ボタン
-        Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.sp + 16.h), // タイトルの高さ分
-              SizedBox(height: 16.h), // 最初のスペース
-              SizedBox(height: 24.h), // テキストの高さ分
-              SizedBox(height: 16.h), // 2番目のスペース
-              SizedBox(
-                width: double.infinity,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: homeState.showTutorialOverlay
-                        ? [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.5),
-                              spreadRadius: 4,
-                              blurRadius: 8,
-                            )
-                          ]
-                        : null,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (homeState.showTutorialOverlay) {
-                        ref.read(homeViewModelProvider.notifier).completeTutorial();
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SelectCharPatternScreen(),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      child: Text(
-                        'キャラクターを作成',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+  Widget _buildCreateButton(BuildContext context, WidgetRef ref, HomeState homeState) {
+    return Positioned(
+      left: 16.w,
+      right: 16.w,
+      bottom: 16.h,
+      child: NeumorphicContainer(
+        isPressed: homeState.showTutorialOverlay,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          child: NeumorphicButton(
+            onPressed: () => _handleCreateButtonPress(context, ref, homeState),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: Text('キャラクターを作成', style: TextStyle(fontSize: 16.sp)),
+            ),
           ),
         ),
-      ],
+      ),
+    );
+  }
+
+  void _handleCreateButtonPress(BuildContext context, WidgetRef ref, HomeState homeState) {
+    if (homeState.showTutorialOverlay) {
+      ref.read(homeViewModelProvider.notifier).completeTutorial();
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SelectCharPatternScreen()),
     );
   }
 }

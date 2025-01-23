@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,9 @@ import 'package:app/features/home/view/tabs/battle_tab.dart';
 import 'package:app/features/home/view/tabs/profile_tab.dart';
 import 'package:app/features/home/model/bottom_nav_item.dart';
 import 'package:app/features/home/model/home_state.dart';
+import 'package:app/features/home/view/widget/neumorphic_bottom_nav.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -16,46 +20,80 @@ class HomeScreen extends ConsumerWidget {
     final homeState = ref.watch(homeViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'AIバトル',
-          style: TextStyle(fontSize: 18.sp),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // TODO: お知らせ画面への遷移
-            },
-          ),
-        ],
-      ),
+      backgroundColor: const Color(0xFFE0E5EC),
+      appBar: _buildNeumorphicAppBar(context),
       body: Stack(
         children: [
           _buildBody(homeState),
-          if (homeState.isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          
-          // チュートリアルダイアログ
-          if (homeState.showTutorialDialog) _buildTutorialDialog(context, ref),
+          if (homeState.isLoading) _buildLoadingOverlay(),
+          if (homeState.showTutorialDialog) _buildNeumorphicTutorialDialog(context, ref),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: BottomNavItem.values.indexOf(homeState.currentTab),
-        items: BottomNavItem.values.map((tab) {
-          return BottomNavigationBarItem(
-            icon: Icon(tab.icon),
-            label: tab.label,
-          );
-        }).toList(),
-        onTap: (index) {
-          ref.read(homeViewModelProvider.notifier).changeTab(BottomNavItem.values[index]);
-        },
+      bottomNavigationBar: NeumorphicBottomNav(),
+    );
+  }
+
+  PreferredSizeWidget _buildNeumorphicAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(56.h),
+      child: NeumorphicContainer(
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text('AIバトル', style: TextStyle(fontSize: 18.sp)),
+          actions: [
+            NeumorphicContainer(
+              isPressed: false,
+              radius: 30,
+              child: IconButton(
+                icon: const Icon(Icons.notifications),
+                onPressed: () {
+                  // TODO: お知らせ画面への遷移
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingOverlay() {
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Container(
+          color: Colors.black.withOpacity(0.5),
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNeumorphicTutorialDialog(BuildContext context, WidgetRef ref) {
+    return Container(
+      color: Colors.black.withOpacity(0.5),
+      child: Center(
+        child: NeumorphicContainer(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('ようこそ', style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+              SizedBox(height: 16.h),
+              Text(
+                'まずは、キャラクターを作成してみましょう！',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp),
+              ),
+              SizedBox(height: 24.h),
+              NeumorphicButton(
+                onPressed: () => ref.read(homeViewModelProvider.notifier).closeTutorialDialog(),
+                child: Text('次へ', style: TextStyle(fontSize: 16.sp)),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -69,49 +107,5 @@ class HomeScreen extends ConsumerWidget {
       case BottomNavItem.profile:
         return const ProfileTab();
     }
-  }
-  
-  Widget _buildTutorialDialog(BuildContext context, WidgetRef ref) {
-    return Container(
-      color: Colors.black.withOpacity(0.5),
-      child: Center(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 32.w),
-          padding: EdgeInsets.all(24.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'ようこそ',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                'まずは、キャラクターを作成してみましょう！',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16.sp),
-              ),
-              SizedBox(height: 24.h),
-              ElevatedButton(
-                onPressed: () {
-                  ref.read(homeViewModelProvider.notifier).closeTutorialDialog();
-                },
-                child: Text(
-                  '次へ',
-                  style: TextStyle(fontSize: 16.sp),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
