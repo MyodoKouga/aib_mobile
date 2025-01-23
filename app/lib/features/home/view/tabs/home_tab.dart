@@ -7,6 +7,7 @@ import 'package:app/features/home/view_model/home_view_model.dart';
 import 'package:app/features/create/view/select_char_pattern_screen.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
+import 'package:app/shared/widget/neumorphic/animated_neumorphic_container.dart';
 
 class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
@@ -115,6 +116,7 @@ class HomeTab extends ConsumerWidget {
       left: 16.w,
       right: 16.w,
       bottom: 16.h,
+      // a) シンプル実装
       child: NeumorphicContainer(
         isPressed: homeState.showTutorialOverlay,
         child: AnimatedContainer(
@@ -128,6 +130,15 @@ class HomeTab extends ConsumerWidget {
           ),
         ),
       ),
+      // b) アニメーションコンテナでの実装
+      // child: AnimatedNeumorphicContainer(
+      //   isPressed: homeState.showTutorialOverlay,
+      //   padding: EdgeInsets.symmetric(vertical: 12.h),
+      //   child: NeumorphicButton(
+      //     onPressed: () => _handleCreateButtonPress(context, ref, homeState),
+      //     child: Text('キャラクターを作成', style: TextStyle(fontSize: 16.sp)),
+      //   ),
+      // ),
     );
   }
 

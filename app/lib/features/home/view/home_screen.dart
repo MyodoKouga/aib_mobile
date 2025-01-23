@@ -9,6 +9,7 @@ import 'package:app/features/home/view/tabs/profile_tab.dart';
 import 'package:app/features/home/model/bottom_nav_item.dart';
 import 'package:app/features/home/model/home_state.dart';
 import 'package:app/features/home/view/widget/neumorphic_bottom_nav.dart';
+import 'package:app/features/home/view/widget/animated_tab_container.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 
@@ -98,14 +99,29 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  // シンプル実装
+  // Widget _buildBody(HomeState state) {
+  //   switch (state.currentTab) {
+  //     case BottomNavItem.home:
+  //       return const HomeTab();
+  //     case BottomNavItem.battle:
+  //       return const BattleTab();
+  //     case BottomNavItem.profile:
+  //       return const ProfileTab();
+  //   }
+  // }
+
+  // アニメーション付き
   Widget _buildBody(HomeState state) {
-    switch (state.currentTab) {
-      case BottomNavItem.home:
-        return const HomeTab();
-      case BottomNavItem.battle:
-        return const BattleTab();
-      case BottomNavItem.profile:
-        return const ProfileTab();
-    }
+    return AnimatedTabContainer(
+      child: KeyedSubtree(
+        key: ValueKey<BottomNavItem>(state.currentTab),
+        child: switch (state.currentTab) {
+          BottomNavItem.home => const HomeTab(),
+          BottomNavItem.battle => const BattleTab(),
+          BottomNavItem.profile => const ProfileTab(),
+        },
+      ),
+    );
   }
 }
