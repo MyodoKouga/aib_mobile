@@ -11,13 +11,32 @@
 android/app/debug.keystore
 
 # iOS
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
-ios/Runner.xcworkspace/
-ios/Pods/
-ios/Podfile.lock
-ios/Flutter/App.framework
-ios/Flutter/engine/
+ios/
+# ios/Flutter/Flutter.framework
+# ios/Flutter/Flutter.podspec
+# ios/Runner.xcworkspace/
+# ios/Pods/
+# ios/Podfile.lock
+# ios/Flutter/App.framework
+# ios/Flutter/engine/
+# ios/Flutter/Debug.xcconfig
+# ios/Flutter/Release.xcconfig
+
+# Mac
+macos/
+# macos/Flutter/Flutter-Debug.xcconfig
+# macos/Flutter/Flutter-Release.xcconfig
+# macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Linux
+linux/
+# linux/flutter/generated_plugin_registrant.cc
+# linux/flutter/generated_plugins.cmake
+
+# Windows
+windows/
+# windows/flutter/generated_plugin_registrant.cc
+# windows/flutter/generated_plugins.cmake
 
 # IntelliJ
 *.iml
