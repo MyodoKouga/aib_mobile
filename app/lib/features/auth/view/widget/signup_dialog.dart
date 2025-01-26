@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app/features/auth/view_model/auth_view_model.dart';
 import '../../../home/view/home_screen.dart';
+import '../../../home/view_model/home_view_model.dart';
 
 class SignupDialog extends ConsumerStatefulWidget {
   const SignupDialog({Key? key}) : super(key: key);
@@ -124,6 +125,9 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                     if (mounted) {
                       Navigator.pop(context);
                     }
+
+                    // HomeScreenへ遷移前にチュートリアル初期化
+                    ref.read(homeViewModelProvider.notifier).initializeTutorial();
 
                     // HomeScreenへ遷移
                     if (mounted) {

@@ -19,7 +19,12 @@ mixin _$HomeState {
   BottomNavItem get currentTab => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
-  List<dynamic> get characters => throw _privateConstructorUsedError;
+  List<dynamic> get characters =>
+      throw _privateConstructorUsedError; // TODO: Characterクラス実装後に型を変更
+// チュートリアル関連の状態を追加
+  bool get isFirstLogin => throw _privateConstructorUsedError;
+  bool get showTutorialDialog => throw _privateConstructorUsedError;
+  bool get showTutorialOverlay => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -37,7 +42,10 @@ abstract class $HomeStateCopyWith<$Res> {
       {BottomNavItem currentTab,
       bool isLoading,
       String? errorMessage,
-      List<dynamic> characters});
+      List<dynamic> characters,
+      bool isFirstLogin,
+      bool showTutorialDialog,
+      bool showTutorialOverlay});
 }
 
 /// @nodoc
@@ -59,6 +67,9 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? isLoading = null,
     Object? errorMessage = freezed,
     Object? characters = null,
+    Object? isFirstLogin = null,
+    Object? showTutorialDialog = null,
+    Object? showTutorialOverlay = null,
   }) {
     return _then(_value.copyWith(
       currentTab: null == currentTab
@@ -77,6 +88,18 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.characters
           : characters // ignore: cast_nullable_to_non_nullable
               as List<dynamic>,
+      isFirstLogin: null == isFirstLogin
+          ? _value.isFirstLogin
+          : isFirstLogin // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showTutorialDialog: null == showTutorialDialog
+          ? _value.showTutorialDialog
+          : showTutorialDialog // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showTutorialOverlay: null == showTutorialOverlay
+          ? _value.showTutorialOverlay
+          : showTutorialOverlay // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -93,7 +116,10 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       {BottomNavItem currentTab,
       bool isLoading,
       String? errorMessage,
-      List<dynamic> characters});
+      List<dynamic> characters,
+      bool isFirstLogin,
+      bool showTutorialDialog,
+      bool showTutorialOverlay});
 }
 
 /// @nodoc
@@ -113,6 +139,9 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? errorMessage = freezed,
     Object? characters = null,
+    Object? isFirstLogin = null,
+    Object? showTutorialDialog = null,
+    Object? showTutorialOverlay = null,
   }) {
     return _then(_$HomeStateImpl(
       currentTab: null == currentTab
@@ -131,6 +160,18 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value._characters
           : characters // ignore: cast_nullable_to_non_nullable
               as List<dynamic>,
+      isFirstLogin: null == isFirstLogin
+          ? _value.isFirstLogin
+          : isFirstLogin // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showTutorialDialog: null == showTutorialDialog
+          ? _value.showTutorialDialog
+          : showTutorialDialog // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showTutorialOverlay: null == showTutorialOverlay
+          ? _value.showTutorialOverlay
+          : showTutorialOverlay // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -142,7 +183,10 @@ class _$HomeStateImpl implements _HomeState {
       {this.currentTab = BottomNavItem.home,
       this.isLoading = false,
       this.errorMessage,
-      final List<dynamic> characters = const []})
+      final List<dynamic> characters = const [],
+      this.isFirstLogin = false,
+      this.showTutorialDialog = false,
+      this.showTutorialOverlay = false})
       : _characters = characters;
 
   @override
@@ -162,9 +206,21 @@ class _$HomeStateImpl implements _HomeState {
     return EqualUnmodifiableListView(_characters);
   }
 
+// TODO: Characterクラス実装後に型を変更
+// チュートリアル関連の状態を追加
+  @override
+  @JsonKey()
+  final bool isFirstLogin;
+  @override
+  @JsonKey()
+  final bool showTutorialDialog;
+  @override
+  @JsonKey()
+  final bool showTutorialOverlay;
+
   @override
   String toString() {
-    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters)';
+    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay)';
   }
 
   @override
@@ -179,12 +235,25 @@ class _$HomeStateImpl implements _HomeState {
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             const DeepCollectionEquality()
-                .equals(other._characters, _characters));
+                .equals(other._characters, _characters) &&
+            (identical(other.isFirstLogin, isFirstLogin) ||
+                other.isFirstLogin == isFirstLogin) &&
+            (identical(other.showTutorialDialog, showTutorialDialog) ||
+                other.showTutorialDialog == showTutorialDialog) &&
+            (identical(other.showTutorialOverlay, showTutorialOverlay) ||
+                other.showTutorialOverlay == showTutorialOverlay));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, currentTab, isLoading,
-      errorMessage, const DeepCollectionEquality().hash(_characters));
+  int get hashCode => Object.hash(
+      runtimeType,
+      currentTab,
+      isLoading,
+      errorMessage,
+      const DeepCollectionEquality().hash(_characters),
+      isFirstLogin,
+      showTutorialDialog,
+      showTutorialOverlay);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -200,7 +269,10 @@ abstract class _HomeState implements HomeState {
       {final BottomNavItem currentTab,
       final bool isLoading,
       final String? errorMessage,
-      final List<dynamic> characters}) = _$HomeStateImpl;
+      final List<dynamic> characters,
+      final bool isFirstLogin,
+      final bool showTutorialDialog,
+      final bool showTutorialOverlay}) = _$HomeStateImpl;
 
   @override
   BottomNavItem get currentTab;
@@ -209,7 +281,14 @@ abstract class _HomeState implements HomeState {
   @override
   String? get errorMessage;
   @override
-  List<dynamic> get characters;
+  List<dynamic> get characters; // TODO: Characterクラス実装後に型を変更
+// チュートリアル関連の状態を追加
+  @override
+  bool get isFirstLogin;
+  @override
+  bool get showTutorialDialog;
+  @override
+  bool get showTutorialOverlay;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../home/view/home_screen.dart';
 import 'package:app/features/auth/view/widget/signup_dialog.dart';
+import '../../home/view_model/home_view_model.dart';
 
 class AuthScreen extends ConsumerWidget {
   const AuthScreen({super.key});
@@ -51,6 +52,9 @@ class AuthScreen extends ConsumerWidget {
               // スキップボタン
               TextButton(
                 onPressed: () {
+                  // HomeScreenへ遷移前にチュートリアル初期化
+                  ref.read(homeViewModelProvider.notifier).initializeTutorial();
+
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const HomeScreen()),

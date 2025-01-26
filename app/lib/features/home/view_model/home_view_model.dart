@@ -37,4 +37,25 @@ class HomeViewModel extends StateNotifier<HomeState> {
       );
     }
   }
+
+  void initializeTutorial() {
+    state = state.copyWith(
+      isFirstLogin: true,
+      showTutorialDialog: true,
+    );
+  }
+
+  void closeTutorialDialog() {
+    state = state.copyWith(
+      showTutorialDialog: false,
+      showTutorialOverlay: true,
+    );
+  }
+
+  void completeTutorial() {
+    state = state.copyWith(
+      isFirstLogin: false,
+      showTutorialOverlay: false,
+    );
+  }
 }

@@ -40,6 +40,9 @@ class HomeScreen extends ConsumerWidget {
                 child: CircularProgressIndicator(),
               ),
             ),
+          
+          // チュートリアルダイアログ
+          if (homeState.showTutorialDialog) _buildTutorialDialog(context, ref),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -66,5 +69,49 @@ class HomeScreen extends ConsumerWidget {
       case BottomNavItem.profile:
         return const ProfileTab();
     }
+  }
+  
+  Widget _buildTutorialDialog(BuildContext context, WidgetRef ref) {
+    return Container(
+      color: Colors.black.withOpacity(0.5),
+      child: Center(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 32.w),
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'ようこそ',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                'まずは、キャラクターを作成してみましょう！',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp),
+              ),
+              SizedBox(height: 24.h),
+              ElevatedButton(
+                onPressed: () {
+                  ref.read(homeViewModelProvider.notifier).closeTutorialDialog();
+                },
+                child: Text(
+                  '次へ',
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
