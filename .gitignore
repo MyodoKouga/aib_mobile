@@ -38,6 +38,12 @@ windows/
 # windows/flutter/generated_plugin_registrant.cc
 # windows/flutter/generated_plugins.cmake
 
+# Android
+android/
+
+#web
+web/
+
 # IntelliJ
 *.iml
 *.ipr
