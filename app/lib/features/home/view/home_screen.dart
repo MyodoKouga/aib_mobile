@@ -118,7 +118,7 @@ class HomeScreen extends ConsumerWidget {
       child: KeyedSubtree(
         key: ValueKey<BottomNavItem>(state.currentTab),
         child: switch (state.currentTab) {
-          BottomNavItem.home => const HomeTab(),
+          BottomNavItem.home => HomeTab(),
           BottomNavItem.list => const ListTab(),
           BottomNavItem.battle => const BattleTab(),
           BottomNavItem.profile => const ProfileTab(),
