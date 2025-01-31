@@ -1,4 +1,7 @@
 import 'dart:ui';
+import 'dart:convert'; 
+import 'dart:typed_data'; 
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +13,7 @@ import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/shared/widget/neumorphic/animated_neumorphic_container.dart';
 
 class HomeTab extends ConsumerWidget {
-  const HomeTab({super.key});
+  HomeTab({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,7 +54,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildMainContent(BuildContext context) {
+ Widget _buildMainContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.w),
       child: NeumorphicContainer(
@@ -64,7 +67,47 @@ class HomeTab extends ConsumerWidget {
               style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16.h),
-            const Center(child: Text('キャラクターがまだありません')),
+
+            // 画像を取得して表示
+            Consumer(
+              builder: (context, ref, child) {
+                final charImageState = ref.watch(charDataProvider);
+
+                return charImageState.when(
+                  data: (imageData) => Column(
+                    children: [
+                      Center(
+                        child: Image.memory(
+                          imageData,
+                          width: 300.w,
+                          height: 300.h,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+
+                      // キャラクター名
+                      Text(
+                        'キャラクター名: テストキャラ',
+                        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 8.h),
+
+                      // 必殺技
+                      Text(
+                        '必殺技: ファイナルストライク',
+                        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (err, _) => Center(
+                    child: Text('画像の取得に失敗しました', style: TextStyle(color: Colors.red)),
+                  ),
+                );
+              },
+            ),
+
             SizedBox(height: 16.h),
             SizedBox(
               width: double.infinity,
@@ -151,4 +194,29 @@ class HomeTab extends ConsumerWidget {
       MaterialPageRoute(builder: (_) => const SelectCharPatternScreen()),
     );
   }
+
+  // サーバ通信用のプロバイダ
+  final charDataProvider = FutureProvider<Uint8List>((ref) async {
+    try {
+      final userId = 1;
+      final mainCharId = 1;
+
+      final url = Uri.parse('http://localhost:8000/get/char_image');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'user_id': userId, 'char_id': mainCharId}),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('サーバエラー: ${response.statusCode}');
+      }
+
+      return response.bodyBytes;
+    } catch (e) {
+      debugPrint('Error fetching image: $e');
+      throw Exception('画像の取得に失敗しました');
+    }
+  });
+
 }
