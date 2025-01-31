@@ -1,14 +1,20 @@
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/features/battle/view/character_change_screen.dart';
 import 'package:app/features/battle/view/battle_result_screen.dart';
 
-class SingleBattleScreen extends StatelessWidget {
-    final int pattern;
+class SingleBattleScreen extends ConsumerWidget {
+  final int pattern;
 
-  const SingleBattleScreen({super.key, required this.pattern});
+  SingleBattleScreen({super.key, required this.pattern});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final charImageState = ref.watch(charDataProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('シングルバトル'),
@@ -24,10 +30,38 @@ class SingleBattleScreen extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                const Center(
-                  child: Text(
-                    'AIキャラクター画像/ステータス',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                Center(
+                  child: charImageState.when(
+                    data: (imageData) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.memory(
+                          imageData,
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // キャラクター名
+                        const Text(
+                          'キャラクター名: テストキャラ',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // 必殺技
+                        const Text(
+                          '必殺技: ファイナルストライク',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    loading: () => const CircularProgressIndicator(),
+                    error: (err, _) => const Text(
+                      '画像の取得に失敗しました',
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                 ),
                 Positioned(
@@ -76,3 +110,27 @@ class SingleBattleScreen extends StatelessWidget {
     );
   }
 }
+
+// サーバ通信用のプロバイダ
+final charDataProvider = FutureProvider<Uint8List>((ref) async {
+  try {
+    final userId = 1;
+    final mainCharId = 1;
+
+    final url = Uri.parse('http://localhost:8000/get/char_image');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'user_id': userId, 'char_id': mainCharId}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('サーバエラー: ${response.statusCode}');
+    }
+
+    return response.bodyBytes;
+  } catch (e) {
+    debugPrint('Error fetching image: $e');
+    throw Exception('画像の取得に失敗しました');
+  }
+});
