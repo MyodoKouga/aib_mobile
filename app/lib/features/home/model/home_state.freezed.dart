@@ -21,10 +21,14 @@ mixin _$HomeState {
   String? get errorMessage => throw _privateConstructorUsedError;
   List<dynamic> get characters =>
       throw _privateConstructorUsedError; // TODO: Characterクラス実装後に型を変更
-// チュートリアル関連の状態を追加
+// チュートリアル関連の状態
   bool get isFirstLogin => throw _privateConstructorUsedError;
   bool get showTutorialDialog => throw _privateConstructorUsedError;
-  bool get showTutorialOverlay => throw _privateConstructorUsedError;
+  bool get showTutorialOverlay =>
+      throw _privateConstructorUsedError; // キャラクター情報を追加
+  Uint8List? get characterImage => throw _privateConstructorUsedError;
+  String? get characterName => throw _privateConstructorUsedError;
+  String? get specialMove => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -45,7 +49,10 @@ abstract class $HomeStateCopyWith<$Res> {
       List<dynamic> characters,
       bool isFirstLogin,
       bool showTutorialDialog,
-      bool showTutorialOverlay});
+      bool showTutorialOverlay,
+      Uint8List? characterImage,
+      String? characterName,
+      String? specialMove});
 }
 
 /// @nodoc
@@ -70,6 +77,9 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? isFirstLogin = null,
     Object? showTutorialDialog = null,
     Object? showTutorialOverlay = null,
+    Object? characterImage = freezed,
+    Object? characterName = freezed,
+    Object? specialMove = freezed,
   }) {
     return _then(_value.copyWith(
       currentTab: null == currentTab
@@ -100,6 +110,18 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.showTutorialOverlay
           : showTutorialOverlay // ignore: cast_nullable_to_non_nullable
               as bool,
+      characterImage: freezed == characterImage
+          ? _value.characterImage
+          : characterImage // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
+      characterName: freezed == characterName
+          ? _value.characterName
+          : characterName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      specialMove: freezed == specialMove
+          ? _value.specialMove
+          : specialMove // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -119,7 +141,10 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       List<dynamic> characters,
       bool isFirstLogin,
       bool showTutorialDialog,
-      bool showTutorialOverlay});
+      bool showTutorialOverlay,
+      Uint8List? characterImage,
+      String? characterName,
+      String? specialMove});
 }
 
 /// @nodoc
@@ -142,6 +167,9 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? isFirstLogin = null,
     Object? showTutorialDialog = null,
     Object? showTutorialOverlay = null,
+    Object? characterImage = freezed,
+    Object? characterName = freezed,
+    Object? specialMove = freezed,
   }) {
     return _then(_$HomeStateImpl(
       currentTab: null == currentTab
@@ -172,6 +200,18 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.showTutorialOverlay
           : showTutorialOverlay // ignore: cast_nullable_to_non_nullable
               as bool,
+      characterImage: freezed == characterImage
+          ? _value.characterImage
+          : characterImage // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
+      characterName: freezed == characterName
+          ? _value.characterName
+          : characterName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      specialMove: freezed == specialMove
+          ? _value.specialMove
+          : specialMove // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -186,7 +226,10 @@ class _$HomeStateImpl implements _HomeState {
       final List<dynamic> characters = const [],
       this.isFirstLogin = false,
       this.showTutorialDialog = false,
-      this.showTutorialOverlay = false})
+      this.showTutorialOverlay = false,
+      this.characterImage,
+      this.characterName,
+      this.specialMove})
       : _characters = characters;
 
   @override
@@ -207,7 +250,7 @@ class _$HomeStateImpl implements _HomeState {
   }
 
 // TODO: Characterクラス実装後に型を変更
-// チュートリアル関連の状態を追加
+// チュートリアル関連の状態
   @override
   @JsonKey()
   final bool isFirstLogin;
@@ -217,10 +260,17 @@ class _$HomeStateImpl implements _HomeState {
   @override
   @JsonKey()
   final bool showTutorialOverlay;
+// キャラクター情報を追加
+  @override
+  final Uint8List? characterImage;
+  @override
+  final String? characterName;
+  @override
+  final String? specialMove;
 
   @override
   String toString() {
-    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay)';
+    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay, characterImage: $characterImage, characterName: $characterName, specialMove: $specialMove)';
   }
 
   @override
@@ -241,7 +291,13 @@ class _$HomeStateImpl implements _HomeState {
             (identical(other.showTutorialDialog, showTutorialDialog) ||
                 other.showTutorialDialog == showTutorialDialog) &&
             (identical(other.showTutorialOverlay, showTutorialOverlay) ||
-                other.showTutorialOverlay == showTutorialOverlay));
+                other.showTutorialOverlay == showTutorialOverlay) &&
+            const DeepCollectionEquality()
+                .equals(other.characterImage, characterImage) &&
+            (identical(other.characterName, characterName) ||
+                other.characterName == characterName) &&
+            (identical(other.specialMove, specialMove) ||
+                other.specialMove == specialMove));
   }
 
   @override
@@ -253,7 +309,10 @@ class _$HomeStateImpl implements _HomeState {
       const DeepCollectionEquality().hash(_characters),
       isFirstLogin,
       showTutorialDialog,
-      showTutorialOverlay);
+      showTutorialOverlay,
+      const DeepCollectionEquality().hash(characterImage),
+      characterName,
+      specialMove);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -272,7 +331,10 @@ abstract class _HomeState implements HomeState {
       final List<dynamic> characters,
       final bool isFirstLogin,
       final bool showTutorialDialog,
-      final bool showTutorialOverlay}) = _$HomeStateImpl;
+      final bool showTutorialOverlay,
+      final Uint8List? characterImage,
+      final String? characterName,
+      final String? specialMove}) = _$HomeStateImpl;
 
   @override
   BottomNavItem get currentTab;
@@ -282,13 +344,19 @@ abstract class _HomeState implements HomeState {
   String? get errorMessage;
   @override
   List<dynamic> get characters; // TODO: Characterクラス実装後に型を変更
-// チュートリアル関連の状態を追加
+// チュートリアル関連の状態
   @override
   bool get isFirstLogin;
   @override
   bool get showTutorialDialog;
   @override
-  bool get showTutorialOverlay;
+  bool get showTutorialOverlay; // キャラクター情報を追加
+  @override
+  Uint8List? get characterImage;
+  @override
+  String? get characterName;
+  @override
+  String? get specialMove;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.

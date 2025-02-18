@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'bottom_nav_item.dart';
 
@@ -11,9 +12,14 @@ class HomeState with _$HomeState {
     String? errorMessage,
     @Default([]) List<dynamic> characters, // TODO: Characterクラス実装後に型を変更
 
-    // チュートリアル関連の状態を追加
+    // チュートリアル関連の状態
     @Default(false) bool isFirstLogin,
     @Default(false) bool showTutorialDialog,
     @Default(false) bool showTutorialOverlay,
+
+    // キャラクター情報を追加
+    Uint8List? characterImage,
+    String? characterName,
+    String? specialMove,
   }) = _HomeState;
 }

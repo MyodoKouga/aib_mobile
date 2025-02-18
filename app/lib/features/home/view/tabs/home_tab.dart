@@ -1,19 +1,14 @@
 import 'dart:ui';
-import 'dart:convert'; 
-import 'dart:typed_data'; 
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app/features/home/model/home_state.dart';
 import 'package:app/features/home/view_model/home_view_model.dart';
-import 'package:app/features/create/view/select_char_pattern_screen.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
-import 'package:app/shared/widget/neumorphic/animated_neumorphic_container.dart';
 
 class HomeTab extends ConsumerWidget {
-  HomeTab({super.key});
+  const HomeTab({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,14 +20,141 @@ class HomeTab extends ConsumerWidget {
 
     return Stack(
       children: [
-        _buildMainContent(context),
-        if (homeState.showTutorialOverlay) _buildTutorialOverlay(),
-        _buildCreateButton(context, ref, homeState),
+        Column(
+          children: [
+            Flexible(child: _buildMainContent(context, ref)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              child: Row(
+                children: [
+                  Expanded(child: _buildCreateButton(context, ref, homeState, 150.h)),
+                  SizedBox(width: 16.w),
+                  Expanded(child: _buildBattleButton(context, ref, homeState, 150.h)),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (homeState.showTutorialOverlay) _buildTutorialOverlay(ref),
       ],
     );
   }
 
-  Widget _buildErrorView(BuildContext context, WidgetRef ref, String error) {
+Widget _buildMainContent(BuildContext context, WidgetRef ref) {
+    final homeState = ref.watch(homeViewModelProvider);
+    final screenHeight = MediaQuery.of(context).size.height;
+    final horizontalPadding = screenHeight * 0.02;
+    final verticalPadding = screenHeight * 0.01;
+    final containerHeight = screenHeight * 0.5;
+    final innerPadding = screenHeight * 0.01;
+    final sizedBoxHeightLarge = screenHeight * 0.02;
+    final sizedBoxHeightSmall = screenHeight * 0.02;
+    final titleFontSize = screenHeight * 0.03;
+    final textFontSize = screenHeight * 0.025;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: verticalPadding,
+      ),
+      child: SizedBox(
+        height: containerHeight,
+        child: NeumorphicContainer(
+          padding: EdgeInsets.all(innerPadding),
+          radius: 20.r,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'マイキャラクター',
+                style: TextStyle(
+                  fontSize: titleFontSize,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: sizedBoxHeightLarge),
+              homeState.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : homeState.characterImage != null
+                      ? Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Image.memory(
+                                  homeState.characterImage!,
+                                  width: screenHeight * 0.3,
+                                  height: screenHeight * 0.3,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              SizedBox(height: sizedBoxHeightLarge),
+                              Text(
+                                homeState.characterName ?? '',
+                                style: TextStyle(
+                                  fontSize: textFontSize,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: sizedBoxHeightSmall),
+                              Text(
+                                homeState.specialMove ?? '',
+                                style: TextStyle(
+                                  fontSize: textFontSize,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            '画像の取得に失敗しました',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCreateButton(BuildContext context, WidgetRef ref, HomeState homeState, double buttonHeight) {
+    return SizedBox(
+      height: buttonHeight,
+      child: NeumorphicButton(
+        onPressed: () => ref.read(homeViewModelProvider.notifier).handleCreateButtonPress(context),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.create, size: 64.sp, color: Colors.blue),
+            SizedBox(height: 12.h),
+            Text('キャラクター作成', style: TextStyle(fontSize: 14.sp, color: Colors.blue)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBattleButton(BuildContext context, WidgetRef ref, HomeState homeState, double buttonHeight) {
+    return SizedBox(
+      height: buttonHeight,
+      child: NeumorphicButton(
+        onPressed: () => ref.read(homeViewModelProvider.notifier).handleBattleButtonPress(context),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.sports_martial_arts, size: 64.sp, color: Colors.red),
+            SizedBox(height: 12.h),
+            Text('バトルする', style: TextStyle(fontSize: 14.sp, color: Colors.red)),
+          ],
+        ),
+      ),
+    );
+  }
+
+    Widget _buildErrorView(BuildContext context, WidgetRef ref, String error) {
     return Center(
       child: NeumorphicContainer(
         padding: EdgeInsets.all(16.w),
@@ -54,82 +176,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
- Widget _buildMainContent(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: NeumorphicContainer(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'マイキャラクター',
-              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.h),
-
-            // 画像を取得して表示
-            Consumer(
-              builder: (context, ref, child) {
-                final charImageState = ref.watch(charDataProvider);
-
-                return charImageState.when(
-                  data: (imageData) => Column(
-                    children: [
-                      Center(
-                        child: Image.memory(
-                          imageData,
-                          width: 300.w,
-                          height: 300.h,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-
-                      // キャラクター名
-                      Text(
-                        'キャラクター名: テストキャラ',
-                        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8.h),
-
-                      // 必殺技
-                      Text(
-                        '必殺技: ファイナルストライク',
-                        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (err, _) => Center(
-                    child: Text('画像の取得に失敗しました', style: TextStyle(color: Colors.red)),
-                  ),
-                );
-              },
-            ),
-
-            SizedBox(height: 16.h),
-            SizedBox(
-              width: double.infinity,
-              child: Opacity(opacity: 0, child: _buildHiddenButton()),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHiddenButton() {
-    return NeumorphicButton(
-      onPressed: null,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        child: const Text('キャラクターを作成'),
-      ),
-    );
-  }
-
-  Widget _buildTutorialOverlay() {
+  Widget _buildTutorialOverlay(WidgetRef ref) {
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -138,14 +185,24 @@ class HomeTab extends ConsumerWidget {
           child: Center(
             child: NeumorphicContainer(
               padding: EdgeInsets.all(16.w),
-              child: Text(
-                'キャラクターを作成して\nAIバトルを始めましょう！',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'キャラクターを作成して\nAIバトルを始めましょう！',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  NeumorphicButton(
+                    onPressed: () => ref.read(homeViewModelProvider.notifier).completeTutorial(),
+                    child: const Text('OK'),
+                  ),
+                ],
               ),
             ),
           ),
@@ -153,70 +210,4 @@ class HomeTab extends ConsumerWidget {
       ),
     );
   }
-
-  Widget _buildCreateButton(BuildContext context, WidgetRef ref, HomeState homeState) {
-    return Positioned(
-      left: 16.w,
-      right: 16.w,
-      bottom: 16.h,
-      // a) シンプル実装
-      child: NeumorphicContainer(
-        isPressed: homeState.showTutorialOverlay,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          child: NeumorphicButton(
-            onPressed: () => _handleCreateButtonPress(context, ref, homeState),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              child: Text('キャラクターを作成', style: TextStyle(fontSize: 16.sp)),
-            ),
-          ),
-        ),
-      ),
-      // b) アニメーションコンテナでの実装
-      // child: AnimatedNeumorphicContainer(
-      //   isPressed: homeState.showTutorialOverlay,
-      //   padding: EdgeInsets.symmetric(vertical: 12.h),
-      //   child: NeumorphicButton(
-      //     onPressed: () => _handleCreateButtonPress(context, ref, homeState),
-      //     child: Text('キャラクターを作成', style: TextStyle(fontSize: 16.sp)),
-      //   ),
-      // ),
-    );
-  }
-
-  void _handleCreateButtonPress(BuildContext context, WidgetRef ref, HomeState homeState) {
-    if (homeState.showTutorialOverlay) {
-      ref.read(homeViewModelProvider.notifier).completeTutorial();
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SelectCharPatternScreen()),
-    );
-  }
-
-  // サーバ通信用のプロバイダ
-  final charDataProvider = FutureProvider<Uint8List>((ref) async {
-    try {
-      final userId = 1;
-      final mainCharId = 1;
-
-      final url = Uri.parse('http://localhost:8000/get/char_image');
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user_id': userId, 'char_id': mainCharId}),
-      );
-
-      if (response.statusCode != 200) {
-        throw Exception('サーバエラー: ${response.statusCode}');
-      }
-
-      return response.bodyBytes;
-    } catch (e) {
-      debugPrint('Error fetching image: $e');
-      throw Exception('画像の取得に失敗しました');
-    }
-  });
-
 }
