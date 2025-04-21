@@ -37,7 +37,7 @@ class HomeScreen extends ConsumerWidget {
 
   PreferredSizeWidget _buildNeumorphicAppBar(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(56.h),
+      preferredSize: Size.fromHeight(24.h),
       child: NeumorphicContainer(
         child: AppBar(
           backgroundColor: Colors.transparent,
@@ -60,6 +60,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  // ロード中のオーバーレイ
   Widget _buildLoadingOverlay() {
     return ClipRect(
       child: BackdropFilter(
@@ -112,7 +113,7 @@ class HomeScreen extends ConsumerWidget {
   //   }
   // }
 
-  // アニメーション付き
+  // アニメーション付き画面の表示切り替え
   Widget _buildBody(HomeState state) {
     return AnimatedTabContainer(
       child: KeyedSubtree(

@@ -11,7 +11,7 @@ class NeumorphicBottomNav extends ConsumerWidget {
    final homeState = ref.watch(homeViewModelProvider);
 
    return NeumorphicContainer(
-     padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+     padding: EdgeInsets.only(top: 4.h, bottom: 54.h, left: 8.w, right: 8.w),
      child: Row(
        mainAxisAlignment: MainAxisAlignment.spaceAround,
        children: BottomNavItem.values.map((tab) {

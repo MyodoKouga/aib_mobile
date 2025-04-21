@@ -16,6 +16,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     loadCharacters();
     fetchCharacterImage(); // キャラクター画像を取得
     fetchCharacterInfo(); // キャラクター情報を取得
+    fetchUserPoints(); // ポイントを取得
   }
 
   void changeTab(BottomNavItem tab) {
@@ -53,7 +54,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user_id': userId, 'char_id': mainCharId}),
+        body: jsonEncode({'user_id': userId}),
       );
 
       if (response.statusCode != 200) {
@@ -77,13 +78,12 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
     try {
       final userId = 1;
-      final mainCharId = 1;
 
       final url = Uri.parse('http://localhost:8000/get/char_info');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user_id': userId, 'char_id': mainCharId}),
+        body: jsonEncode({'user_id': userId}),
       );
 
       if (response.statusCode != 200) {
@@ -92,18 +92,40 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
       final data = jsonDecode(response.body);
       final characterName = data['char_name'] as String?;
-      final specialMove = data['special_move'] as String?;
 
       state = state.copyWith(
         isLoading: false,
         characterName: characterName,
-        specialMove: specialMove,
       );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'キャラクター情報の取得に失敗しました',
       );
+    }
+  }
+
+  Future<void> fetchUserPoints() async {
+    try {
+      final userId = 1;
+
+      final url = Uri.parse('http://localhost:8000/get/points'); // ← ここはAPIのURLに合わせてね
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'user_id': userId}),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('サーバエラー: ${response.statusCode}');
+      }
+
+      final data = jsonDecode(response.body);
+      final points = data['points'] as int;
+
+      state = state.copyWith(points: points);
+    } catch (e) {
+      state = state.copyWith(errorMessage: 'ポイントの取得に失敗しました');
     }
   }
 

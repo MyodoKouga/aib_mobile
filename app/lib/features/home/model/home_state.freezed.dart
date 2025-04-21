@@ -28,7 +28,8 @@ mixin _$HomeState {
       throw _privateConstructorUsedError; // キャラクター情報を追加
   Uint8List? get characterImage => throw _privateConstructorUsedError;
   String? get characterName => throw _privateConstructorUsedError;
-  String? get specialMove => throw _privateConstructorUsedError;
+  String? get specialMove => throw _privateConstructorUsedError; // ポイント
+  int get points => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -52,7 +53,8 @@ abstract class $HomeStateCopyWith<$Res> {
       bool showTutorialOverlay,
       Uint8List? characterImage,
       String? characterName,
-      String? specialMove});
+      String? specialMove,
+      int points});
 }
 
 /// @nodoc
@@ -80,6 +82,7 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? characterImage = freezed,
     Object? characterName = freezed,
     Object? specialMove = freezed,
+    Object? points = null,
   }) {
     return _then(_value.copyWith(
       currentTab: null == currentTab
@@ -122,6 +125,10 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.specialMove
           : specialMove // ignore: cast_nullable_to_non_nullable
               as String?,
+      points: null == points
+          ? _value.points
+          : points // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -144,7 +151,8 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       bool showTutorialOverlay,
       Uint8List? characterImage,
       String? characterName,
-      String? specialMove});
+      String? specialMove,
+      int points});
 }
 
 /// @nodoc
@@ -170,6 +178,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? characterImage = freezed,
     Object? characterName = freezed,
     Object? specialMove = freezed,
+    Object? points = null,
   }) {
     return _then(_$HomeStateImpl(
       currentTab: null == currentTab
@@ -212,6 +221,10 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.specialMove
           : specialMove // ignore: cast_nullable_to_non_nullable
               as String?,
+      points: null == points
+          ? _value.points
+          : points // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -229,7 +242,8 @@ class _$HomeStateImpl implements _HomeState {
       this.showTutorialOverlay = false,
       this.characterImage,
       this.characterName,
-      this.specialMove})
+      this.specialMove,
+      this.points = 0})
       : _characters = characters;
 
   @override
@@ -267,10 +281,14 @@ class _$HomeStateImpl implements _HomeState {
   final String? characterName;
   @override
   final String? specialMove;
+// ポイント
+  @override
+  @JsonKey()
+  final int points;
 
   @override
   String toString() {
-    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay, characterImage: $characterImage, characterName: $characterName, specialMove: $specialMove)';
+    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay, characterImage: $characterImage, characterName: $characterName, specialMove: $specialMove, points: $points)';
   }
 
   @override
@@ -297,7 +315,8 @@ class _$HomeStateImpl implements _HomeState {
             (identical(other.characterName, characterName) ||
                 other.characterName == characterName) &&
             (identical(other.specialMove, specialMove) ||
-                other.specialMove == specialMove));
+                other.specialMove == specialMove) &&
+            (identical(other.points, points) || other.points == points));
   }
 
   @override
@@ -312,7 +331,8 @@ class _$HomeStateImpl implements _HomeState {
       showTutorialOverlay,
       const DeepCollectionEquality().hash(characterImage),
       characterName,
-      specialMove);
+      specialMove,
+      points);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -334,7 +354,8 @@ abstract class _HomeState implements HomeState {
       final bool showTutorialOverlay,
       final Uint8List? characterImage,
       final String? characterName,
-      final String? specialMove}) = _$HomeStateImpl;
+      final String? specialMove,
+      final int points}) = _$HomeStateImpl;
 
   @override
   BottomNavItem get currentTab;
@@ -356,7 +377,9 @@ abstract class _HomeState implements HomeState {
   @override
   String? get characterName;
   @override
-  String? get specialMove;
+  String? get specialMove; // ポイント
+  @override
+  int get points;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.

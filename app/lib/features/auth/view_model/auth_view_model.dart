@@ -16,7 +16,9 @@ class AuthViewModel extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       // バックエンドAPIのURL
-      final url = Uri.parse("http://localhost:8000/register");
+      final url = Uri.parse("http://192.168.0.107:8000/register/");
+      //家
+      // final url = Uri.parse("http://192.168.1.5:8000/register/");
 
       // リクエストボディを作成
       final requestBody = jsonEncode({

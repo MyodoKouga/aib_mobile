@@ -6,6 +6,8 @@ import 'package:app/features/home/model/home_state.dart';
 import 'package:app/features/home/view_model/home_view_model.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
+import 'package:app/main.dart';
+
 
 class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
@@ -22,6 +24,10 @@ class HomeTab extends ConsumerWidget {
       children: [
         Column(
           children: [
+            Padding(
+              padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 8.h),
+              child: _buildSubContent(context, ref),
+            ),
             Flexible(child: _buildMainContent(context, ref)),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -30,6 +36,8 @@ class HomeTab extends ConsumerWidget {
                   Expanded(child: _buildCreateButton(context, ref, homeState, 150.h)),
                   SizedBox(width: 16.w),
                   Expanded(child: _buildBattleButton(context, ref, homeState, 150.h)),
+                  SizedBox(width: 16.w),
+                  Expanded(child: _buildAdButton(context, ref, homeState, 150.h)),
                 ],
               ),
             ),
@@ -40,16 +48,16 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-Widget _buildMainContent(BuildContext context, WidgetRef ref) {
+  Widget _buildMainContent(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeViewModelProvider);
     final screenHeight = MediaQuery.of(context).size.height;
     final horizontalPadding = screenHeight * 0.02;
     final verticalPadding = screenHeight * 0.01;
-    final containerHeight = screenHeight * 0.5;
+    final containerHeight = screenHeight * 0.45;
     final innerPadding = screenHeight * 0.01;
     final sizedBoxHeightLarge = screenHeight * 0.02;
     final sizedBoxHeightSmall = screenHeight * 0.02;
-    final titleFontSize = screenHeight * 0.03;
+    final titleFontSize = screenHeight * 0.02;
     final textFontSize = screenHeight * 0.025;
 
     return Padding(
@@ -96,14 +104,6 @@ Widget _buildMainContent(BuildContext context, WidgetRef ref) {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: sizedBoxHeightSmall),
-                              Text(
-                                homeState.specialMove ?? '',
-                                style: TextStyle(
-                                  fontSize: textFontSize,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
                             ],
                           ),
                         )
@@ -119,6 +119,42 @@ Widget _buildMainContent(BuildContext context, WidgetRef ref) {
       ),
     );
   }
+  
+  Widget _buildSubContent(BuildContext context, WidgetRef ref) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final subContainerHeight = screenHeight * 0.08;
+    final innerPadding = screenHeight * 0.01;
+    final homeState = ref.watch(homeViewModelProvider);
+
+    return SizedBox(
+      height: subContainerHeight,
+      child: NeumorphicContainer(
+        padding: EdgeInsets.all(innerPadding),
+        radius: 20.r,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, // ← 横並びの余白調整
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('所有ポイント'),
+                //バックエンドからAPIでポイント数を取得
+                Text('${homeState.points} p')
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('バトル待機状態'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildCreateButton(BuildContext context, WidgetRef ref, HomeState homeState, double buttonHeight) {
     return SizedBox(
@@ -130,7 +166,7 @@ Widget _buildMainContent(BuildContext context, WidgetRef ref) {
           children: [
             Icon(Icons.create, size: 64.sp, color: Colors.blue),
             SizedBox(height: 12.h),
-            Text('キャラクター作成', style: TextStyle(fontSize: 14.sp, color: Colors.blue)),
+            Text('キャラクター作成', style: TextStyle(fontSize: 12.sp, color: Colors.blue), textAlign: TextAlign.center),
           ],
         ),
       ),
@@ -148,6 +184,24 @@ Widget _buildMainContent(BuildContext context, WidgetRef ref) {
             Icon(Icons.sports_martial_arts, size: 64.sp, color: Colors.red),
             SizedBox(height: 12.h),
             Text('バトルする', style: TextStyle(fontSize: 14.sp, color: Colors.red)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdButton(BuildContext context, WidgetRef ref, HomeState homeState, double buttonHeight) {
+    return SizedBox(
+      height: buttonHeight,
+      child: NeumorphicButton(
+        // このボタンを押したらリワード広告
+        onPressed: () => RewardAdHelper.showRewardedAd(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.savings, size: 64.sp, color: Colors.orange),
+            SizedBox(height: 12.h),
+            Text('ポイントをゲットする', style: TextStyle(fontSize: 14.sp, color: Colors.orange), textAlign: TextAlign.center),
           ],
         ),
       ),

@@ -21,5 +21,8 @@ class HomeState with _$HomeState {
     Uint8List? characterImage,
     String? characterName,
     String? specialMove,
+
+    // ポイント
+    @Default(0) int points,
   }) = _HomeState;
 }
