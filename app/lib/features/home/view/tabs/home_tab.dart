@@ -30,14 +30,14 @@ class HomeTab extends ConsumerWidget {
             ),
             Flexible(child: _buildMainContent(context, ref)),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               child: Row(
                 children: [
-                  Expanded(child: _buildCreateButton(context, ref, homeState, 150.h)),
+                  Expanded(child: _buildCreateButton(context, ref, homeState, 140.h)),
                   SizedBox(width: 16.w),
-                  Expanded(child: _buildBattleButton(context, ref, homeState, 150.h)),
+                  Expanded(child: _buildBattleButton(context, ref, homeState, 140.h)),
                   SizedBox(width: 16.w),
-                  Expanded(child: _buildAdButton(context, ref, homeState, 150.h)),
+                  Expanded(child: _buildAdButton(context, ref, homeState, 140.h)),
                 ],
               ),
             ),
@@ -140,16 +140,26 @@ class HomeTab extends ConsumerWidget {
               children: [
                 Text('所有ポイント'),
                 //バックエンドからAPIでポイント数を取得
-                Text('${homeState.points} p')
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    // '${homeState.points} p',
+                    '1000 p',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    )
+                  ),
+                )
               ],
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('バトル待機状態'),
+                _buildBattleStatus(homeState, ref),
               ],
-            ),
+            )
           ],
         ),
       ),
@@ -195,7 +205,7 @@ class HomeTab extends ConsumerWidget {
       height: buttonHeight,
       child: NeumorphicButton(
         // このボタンを押したらリワード広告
-        onPressed: () => RewardAdHelper.showRewardedAd(),
+        onPressed: () => RewardAdHelper.showRewardedAd(context),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -208,7 +218,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
-    Widget _buildErrorView(BuildContext context, WidgetRef ref, String error) {
+  Widget _buildErrorView(BuildContext context, WidgetRef ref, String error) {
     return Center(
       child: NeumorphicContainer(
         padding: EdgeInsets.all(16.w),
@@ -226,6 +236,56 @@ class HomeTab extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // バトル待機ウィジェット
+  Widget _buildBattleStatus(HomeState homeState, WidgetRef ref) {
+    // final battleFlg = homeState.battleFlg;
+    final battleFlg = 2;
+
+    final battleStatusMap = {
+      0: 'バトル未参加',
+      1: 'バトル待機中',
+      2: 'バトル完了',
+    };
+
+    if (battleFlg == 2) {
+      return TextButton(
+        onPressed: () {
+          // バトル終了後の処理（結果を見る画面へ）
+          print('バトル終了ボタン押下');
+        },
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.green,
+          padding: EdgeInsets.symmetric(
+            horizontal: 18.w,
+            vertical: 12.h,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+        ),
+        child: Text(
+          battleStatusMap[battleFlg]!,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16.sp,
+          ),
+        ),
+      );
+    }
+
+    return Text(
+      battleStatusMap[battleFlg] ?? '不明',
+      style: TextStyle(
+        color: battleFlg == 1
+            ? Colors.red
+            : Colors.grey,
+        fontWeight: FontWeight.bold,
+        fontSize: 12.sp,
       ),
     );
   }

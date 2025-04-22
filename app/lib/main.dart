@@ -8,6 +8,9 @@ import 'package:app/features/home/view/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  final config = RequestConfiguration(testDeviceIds: ['SIMULATOR']);
+  await MobileAds.instance.updateRequestConfiguration(config);
 
   // AdMobの初期化
   await MobileAds.instance.initialize();
@@ -113,13 +116,25 @@ class RewardAdHelper {
   }
 
   // 広告を表示する関数
-  static void showRewardedAd() {
+  static void showRewardedAd(BuildContext context) {
     if (_rewardedAd != null) {
       _rewardedAd!.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
           print('ユーザーが報酬を獲得しました！');
-          // 👇 ここでポイント加算とかする
-          // onRewardEarned();
+          // 🔥 ポップアップを表示
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('🎉 報酬ゲット！'),
+              content: const Text('10ポイントを獲得しました！'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
         },
       );
       _rewardedAd = null;

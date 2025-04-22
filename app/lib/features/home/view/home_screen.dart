@@ -23,21 +23,22 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFE0E5EC),
-      appBar: _buildNeumorphicAppBar(context),
+      appBar: _buildNeumorphicAppBar(context, ref),
       body: Stack(
         children: [
           _buildBody(homeState),
           if (homeState.isLoading) _buildLoadingOverlay(),
           if (homeState.showTutorialDialog) _buildNeumorphicTutorialDialog(context, ref),
+          if (homeState.showNotificationModal) _buildNotificationModal(context, ref),
         ],
       ),
       bottomNavigationBar: NeumorphicBottomNav(),
     );
   }
 
-  PreferredSizeWidget _buildNeumorphicAppBar(BuildContext context) {
+  PreferredSizeWidget _buildNeumorphicAppBar(BuildContext context, WidgetRef ref) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(24.h),
+      preferredSize: Size.fromHeight(56.h),
       child: NeumorphicContainer(
         child: AppBar(
           backgroundColor: Colors.transparent,
@@ -50,11 +51,41 @@ class HomeScreen extends ConsumerWidget {
               child: IconButton(
                 icon: const Icon(Icons.notifications),
                 onPressed: () {
-                  // TODO: お知らせ画面への遷移
+                  // TODO: お知らせ画面モーダルの表示
+                  ref.read(homeViewModelProvider.notifier).openNotificationModal();
                 },
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // お知らせモーダル用ウィジェット
+  Widget _buildNotificationModal(BuildContext context, WidgetRef ref) {
+    return Container(
+      color: Colors.black.withOpacity(0.5),
+      child: Center(
+        child: NeumorphicContainer(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('お知らせ', style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+              SizedBox(height: 16.h),
+              Text(
+                '最新のアップデート情報やイベント情報をここに表示できます！',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.sp),
+              ),
+              SizedBox(height: 24.h),
+              NeumorphicButton(
+                onPressed: () => ref.read(homeViewModelProvider.notifier).closeNotificationModal(),
+                child: Text('閉じる', style: TextStyle(fontSize: 16.sp)),
+              ),
+            ],
+          ),
         ),
       ),
     );

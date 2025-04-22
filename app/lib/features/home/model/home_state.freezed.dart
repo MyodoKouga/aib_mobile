@@ -28,8 +28,12 @@ mixin _$HomeState {
       throw _privateConstructorUsedError; // キャラクター情報を追加
   Uint8List? get characterImage => throw _privateConstructorUsedError;
   String? get characterName => throw _privateConstructorUsedError;
-  String? get specialMove => throw _privateConstructorUsedError; // ポイント
-  int get points => throw _privateConstructorUsedError;
+  String? get specialMove => throw _privateConstructorUsedError; // ユーザー情報
+  String? get userName => throw _privateConstructorUsedError;
+  String? get myCharId => throw _privateConstructorUsedError;
+  int get battleFlg => throw _privateConstructorUsedError;
+  int get points => throw _privateConstructorUsedError; // お知らせモーダル
+  bool get showNotificationModal => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -54,7 +58,11 @@ abstract class $HomeStateCopyWith<$Res> {
       Uint8List? characterImage,
       String? characterName,
       String? specialMove,
-      int points});
+      String? userName,
+      String? myCharId,
+      int battleFlg,
+      int points,
+      bool showNotificationModal});
 }
 
 /// @nodoc
@@ -82,7 +90,11 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? characterImage = freezed,
     Object? characterName = freezed,
     Object? specialMove = freezed,
+    Object? userName = freezed,
+    Object? myCharId = freezed,
+    Object? battleFlg = null,
     Object? points = null,
+    Object? showNotificationModal = null,
   }) {
     return _then(_value.copyWith(
       currentTab: null == currentTab
@@ -125,10 +137,26 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.specialMove
           : specialMove // ignore: cast_nullable_to_non_nullable
               as String?,
+      userName: freezed == userName
+          ? _value.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      myCharId: freezed == myCharId
+          ? _value.myCharId
+          : myCharId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      battleFlg: null == battleFlg
+          ? _value.battleFlg
+          : battleFlg // ignore: cast_nullable_to_non_nullable
+              as int,
       points: null == points
           ? _value.points
           : points // ignore: cast_nullable_to_non_nullable
               as int,
+      showNotificationModal: null == showNotificationModal
+          ? _value.showNotificationModal
+          : showNotificationModal // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -152,7 +180,11 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       Uint8List? characterImage,
       String? characterName,
       String? specialMove,
-      int points});
+      String? userName,
+      String? myCharId,
+      int battleFlg,
+      int points,
+      bool showNotificationModal});
 }
 
 /// @nodoc
@@ -178,7 +210,11 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? characterImage = freezed,
     Object? characterName = freezed,
     Object? specialMove = freezed,
+    Object? userName = freezed,
+    Object? myCharId = freezed,
+    Object? battleFlg = null,
     Object? points = null,
+    Object? showNotificationModal = null,
   }) {
     return _then(_$HomeStateImpl(
       currentTab: null == currentTab
@@ -221,10 +257,26 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.specialMove
           : specialMove // ignore: cast_nullable_to_non_nullable
               as String?,
+      userName: freezed == userName
+          ? _value.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      myCharId: freezed == myCharId
+          ? _value.myCharId
+          : myCharId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      battleFlg: null == battleFlg
+          ? _value.battleFlg
+          : battleFlg // ignore: cast_nullable_to_non_nullable
+              as int,
       points: null == points
           ? _value.points
           : points // ignore: cast_nullable_to_non_nullable
               as int,
+      showNotificationModal: null == showNotificationModal
+          ? _value.showNotificationModal
+          : showNotificationModal // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -243,7 +295,11 @@ class _$HomeStateImpl implements _HomeState {
       this.characterImage,
       this.characterName,
       this.specialMove,
-      this.points = 0})
+      this.userName,
+      this.myCharId,
+      this.battleFlg = 0,
+      this.points = 0,
+      this.showNotificationModal = false})
       : _characters = characters;
 
   @override
@@ -281,14 +337,25 @@ class _$HomeStateImpl implements _HomeState {
   final String? characterName;
   @override
   final String? specialMove;
-// ポイント
+// ユーザー情報
+  @override
+  final String? userName;
+  @override
+  final String? myCharId;
+  @override
+  @JsonKey()
+  final int battleFlg;
   @override
   @JsonKey()
   final int points;
+// お知らせモーダル
+  @override
+  @JsonKey()
+  final bool showNotificationModal;
 
   @override
   String toString() {
-    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay, characterImage: $characterImage, characterName: $characterName, specialMove: $specialMove, points: $points)';
+    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay, characterImage: $characterImage, characterName: $characterName, specialMove: $specialMove, userName: $userName, myCharId: $myCharId, battleFlg: $battleFlg, points: $points, showNotificationModal: $showNotificationModal)';
   }
 
   @override
@@ -316,7 +383,15 @@ class _$HomeStateImpl implements _HomeState {
                 other.characterName == characterName) &&
             (identical(other.specialMove, specialMove) ||
                 other.specialMove == specialMove) &&
-            (identical(other.points, points) || other.points == points));
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
+            (identical(other.myCharId, myCharId) ||
+                other.myCharId == myCharId) &&
+            (identical(other.battleFlg, battleFlg) ||
+                other.battleFlg == battleFlg) &&
+            (identical(other.points, points) || other.points == points) &&
+            (identical(other.showNotificationModal, showNotificationModal) ||
+                other.showNotificationModal == showNotificationModal));
   }
 
   @override
@@ -332,7 +407,11 @@ class _$HomeStateImpl implements _HomeState {
       const DeepCollectionEquality().hash(characterImage),
       characterName,
       specialMove,
-      points);
+      userName,
+      myCharId,
+      battleFlg,
+      points,
+      showNotificationModal);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -355,7 +434,11 @@ abstract class _HomeState implements HomeState {
       final Uint8List? characterImage,
       final String? characterName,
       final String? specialMove,
-      final int points}) = _$HomeStateImpl;
+      final String? userName,
+      final String? myCharId,
+      final int battleFlg,
+      final int points,
+      final bool showNotificationModal}) = _$HomeStateImpl;
 
   @override
   BottomNavItem get currentTab;
@@ -377,9 +460,17 @@ abstract class _HomeState implements HomeState {
   @override
   String? get characterName;
   @override
-  String? get specialMove; // ポイント
+  String? get specialMove; // ユーザー情報
   @override
-  int get points;
+  String? get userName;
+  @override
+  String? get myCharId;
+  @override
+  int get battleFlg;
+  @override
+  int get points; // お知らせモーダル
+  @override
+  bool get showNotificationModal;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:app/features/create/view/select_char_pattern_screen.dart';
 import 'package:app/features/battle/view/single_battle_patterns_screen.dart';
+import 'package:app/features/create/view/create_char_screen.dart';
 
 final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((ref) {
   return HomeViewModel();
@@ -13,10 +14,17 @@ final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((r
 
 class HomeViewModel extends StateNotifier<HomeState> {
   HomeViewModel() : super(const HomeState()) {
-    loadCharacters();
-    fetchCharacterImage(); // キャラクター画像を取得
-    fetchCharacterInfo(); // キャラクター情報を取得
-    fetchUserPoints(); // ポイントを取得
+    fetchUserInfo(); // ポイントを取得
+    // loadCharacters();
+    // fetchCharacterImage(); // キャラクター画像を取得
+    // fetchCharacterInfo(); // キャラクター情報を取得
+  }
+  void openNotificationModal() {
+    state = state.copyWith(showNotificationModal: true);
+  }
+
+  void closeNotificationModal() {
+    state = state.copyWith(showNotificationModal: false);
   }
 
   void changeTab(BottomNavItem tab) {
@@ -43,14 +51,72 @@ class HomeViewModel extends StateNotifier<HomeState> {
     }
   }
 
-  Future<void> fetchCharacterImage() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+  // Future<void> fetchCharacterImage() async {
+  //   state = state.copyWith(isLoading: true, errorMessage: null);
 
+  //   try {
+  //     final userId = 1;
+
+  //     final url = Uri.parse('http://localhost:8000/get/char_image');
+  //     final response = await http.post(
+  //       url,
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode({'user_id': userId}),
+  //     );
+
+  //     if (response.statusCode != 200) {
+  //       throw Exception('サーバエラー: ${response.statusCode}');
+  //     }
+
+  //     state = state.copyWith(
+  //       isLoading: false,
+  //       characterImage: response.bodyBytes,
+  //     );
+  //   } catch (e) {
+  //     state = state.copyWith(
+  //       isLoading: false,
+  //       errorMessage: '画像の取得に失敗しました',
+  //     );
+  //   }
+  // }
+
+  // Future<void> fetchCharacterInfo() async {
+  //   state = state.copyWith(isLoading: true, errorMessage: null);
+
+  //   try {
+  //     final userId = 1;
+
+  //     final url = Uri.parse('http://localhost:8000/get/char_info');
+  //     final response = await http.post(
+  //       url,
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode({'user_id': userId}),
+  //     );
+
+  //     if (response.statusCode != 200) {
+  //       throw Exception('サーバエラー: ${response.statusCode}');
+  //     }
+
+  //     final data = jsonDecode(response.body);
+  //     final characterName = data['char_name'] as String?;
+
+  //     state = state.copyWith(
+  //       isLoading: false,
+  //       characterName: characterName,
+  //     );
+  //   } catch (e) {
+  //     state = state.copyWith(
+  //       isLoading: false,
+  //       errorMessage: 'キャラクター情報の取得に失敗しました',
+  //     );
+  //   }
+  // }
+
+  Future<void> fetchUserInfo() async {
     try {
       final userId = 1;
-      final mainCharId = 1;
 
-      final url = Uri.parse('http://localhost:8000/get/char_image');
+      final url = Uri.parse('http://localhost:8000/get/user_info');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -61,69 +127,20 @@ class HomeViewModel extends StateNotifier<HomeState> {
         throw Exception('サーバエラー: ${response.statusCode}');
       }
 
+      final data = jsonDecode(response.body);
+      final userName = data['user_name'] as String?;
+      final points = data['points'] as int;
+      final characterName = data['char_name'] as String?;
+      final battleFlg = data['battle_flg'] as int;
       state = state.copyWith(
         isLoading: false,
+        userName: userName,
+        points: points,
+        battleFlg: battleFlg,
+        characterName: characterName,
         characterImage: response.bodyBytes,
       );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: '画像の取得に失敗しました',
-      );
-    }
-  }
 
-  Future<void> fetchCharacterInfo() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
-
-    try {
-      final userId = 1;
-
-      final url = Uri.parse('http://localhost:8000/get/char_info');
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user_id': userId}),
-      );
-
-      if (response.statusCode != 200) {
-        throw Exception('サーバエラー: ${response.statusCode}');
-      }
-
-      final data = jsonDecode(response.body);
-      final characterName = data['char_name'] as String?;
-
-      state = state.copyWith(
-        isLoading: false,
-        characterName: characterName,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: 'キャラクター情報の取得に失敗しました',
-      );
-    }
-  }
-
-  Future<void> fetchUserPoints() async {
-    try {
-      final userId = 1;
-
-      final url = Uri.parse('http://localhost:8000/get/points'); // ← ここはAPIのURLに合わせてね
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user_id': userId}),
-      );
-
-      if (response.statusCode != 200) {
-        throw Exception('サーバエラー: ${response.statusCode}');
-      }
-
-      final data = jsonDecode(response.body);
-      final points = data['points'] as int;
-
-      state = state.copyWith(points: points);
     } catch (e) {
       state = state.copyWith(errorMessage: 'ポイントの取得に失敗しました');
     }
@@ -135,7 +152,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     }
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const SelectCharPatternScreen()),
+      MaterialPageRoute(builder: (_) => const CreateCharacterScreen()),
     );
   }
 

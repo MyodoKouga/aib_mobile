@@ -22,7 +22,14 @@ class HomeState with _$HomeState {
     String? characterName,
     String? specialMove,
 
-    // ポイント
+    // ユーザー情報
+    String? userName,
+    String? myCharId,
+    @Default(0) int battleFlg,
     @Default(0) int points,
+
+    // お知らせモーダル
+    @Default(false) bool showNotificationModal,
+
   }) = _HomeState;
 }
