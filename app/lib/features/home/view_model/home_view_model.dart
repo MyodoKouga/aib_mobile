@@ -4,9 +4,8 @@ import 'package:app/features/home/model/home_state.dart';
 import 'package:app/features/home/model/bottom_nav_item.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:app/features/create/view/select_char_pattern_screen.dart';
-import 'package:app/features/battle/view/single_battle_patterns_screen.dart';
 import 'package:app/features/create/view/create_char_screen.dart';
+import 'package:app/features/battle/view/single_battle_patterns_screen.dart';
 
 final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((ref) {
   return HomeViewModel();

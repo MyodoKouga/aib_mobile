@@ -1,37 +1,45 @@
-import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
+import 'package:app/features/create/model/create_char_model.dart';
+import 'package:app/features/create/view_model/create_char_view_model.dart';
 
-class CreateCharacterScreen extends StatefulWidget {
-  final String patternName;
-
-  const CreateCharacterScreen({Key? key, required this.patternName}) : super(key: key);
+class CreateCharacterScreen extends ConsumerStatefulWidget {
+  const CreateCharacterScreen({Key? key}) : super(key: key);
 
   @override
-  _CreateCharacterScreenState createState() => _CreateCharacterScreenState();
+  ConsumerState<CreateCharacterScreen> createState() => _CreateCharacterScreenState();
 }
 
-class _CreateCharacterScreenState extends State<CreateCharacterScreen> {
+class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final statusFields = ['HP', 'ATK', 'DEF', 'AGI', 'LUK'];
   late final Map<String, TextEditingController> _controllers;
+
+  final int totalPoints = 50;
+  int get usedPoints => statusValues.values.reduce((sum, val) => sum + val);
+
+  Map<String, int> statusValues = {
+    'HP': 0,
+    'ATK': 0,
+    'DEF': 0,
+    'AGI': 0,
+    'LUK': 0,
+  };
 
   @override
   void initState() {
     super.initState();
-
     _controllers = {
       'キャラクター名': TextEditingController(),
-      'HP': TextEditingController(),
       '攻撃スキル': TextEditingController(),
       '防御スキル': TextEditingController(),
       '必殺技': TextEditingController(),
+      '必殺技説明': TextEditingController(),
     };
-
-    if (widget.patternName == 'I4') {
-      _controllers['アイテム'] = TextEditingController();
-    } else if (widget.patternName == 'I5') {
-      _controllers['タイプ'] = TextEditingController();
-    }
   }
 
   @override
@@ -44,22 +52,22 @@ class _CreateCharacterScreenState extends State<CreateCharacterScreen> {
 
   Future<void> _submitCharacter() async {
     if (_formKey.currentState!.validate()) {
-      final Map<String, dynamic> characterData = {
-        'pattern': widget.patternName,
-        'character_name': _controllers['キャラクター名']!.text,
-        'hp': int.tryParse(_controllers['HP']!.text) ?? 0,
-        'attack_skill': _controllers['攻撃スキル']!.text,
-        'defense_skill': _controllers['防御スキル']!.text,
-        'special_move': _controllers['必殺技']!.text,
-      };
-
-      if (widget.patternName == 'I4') {
-        characterData['item'] = _controllers['アイテム']?.text;
-      } else if (widget.patternName == 'I5') {
-        characterData['type'] = _controllers['タイプ']?.text;
-      }
-
-      final success = await _registerCharacter(characterData);
+      final character = Character(
+        pattern: 'I1',
+        userId: 3,
+        characterName: _controllers['キャラクター名']!.text,
+        hp: int.tryParse(_controllers['HP']!.text) ?? 0,
+        atk: int.tryParse(_controllers['ATK']!.text) ?? 0,
+        def: int.tryParse(_controllers['DEF']!.text) ?? 0,
+        agi: int.tryParse(_controllers['AGI']!.text) ?? 0,
+        luk: int.tryParse(_controllers['LUK']!.text) ?? 0,
+        attackSkill: _controllers['攻撃スキル']!.text,
+        defenseSkill: _controllers['防御スキル']!.text,
+        specialMove: _controllers['必殺技']!.text,
+        specialDetail: _controllers['必殺技説明']!.text,
+      );
+      
+      final success = await ref.read(createCharViewModelProvider.notifier).submitCharacter(character);
 
       if (success) {
         Navigator.push(
@@ -76,92 +84,111 @@ class _CreateCharacterScreenState extends State<CreateCharacterScreen> {
     }
   }
 
-  Future<bool> _registerCharacter(Map<String, dynamic> data) async {
-    String endpoint;
-
-    switch (widget.patternName) {
-      case 'I1':
-        endpoint = 'http://localhost:8000/create/patternI1';
-        break;
-      case 'I2':
-        endpoint = 'http://localhost:8000/create/patternI2';
-        break;
-      case 'I3':
-        endpoint = 'http://localhost:8000/create/patternI3';
-        break;
-      case 'I4':
-        endpoint = 'http://localhost:8000/create/patternI4';
-        break;
-      case 'I5':
-        endpoint = 'http://localhost:8000/create/patternI5';
-        break;
-      default:
-        endpoint = 'http://localhost:8000/create/default';
-    }
-
-    final url = Uri.parse(endpoint);
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(data),
-      );
-
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        final errorResponse = json.decode(response.body);
-        throw Exception('サーバーエラー: ${errorResponse['detail'] ?? response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('サーバー通信に失敗しました: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.patternName} 用キャラクター作成'),
-      ),
+      backgroundColor: const Color(0xFFE0E5EC),
+      appBar: _buildNeumorphicAppBar(context),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              ..._controllers.entries.map((entry) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    controller: entry.value,
-                    decoration: InputDecoration(
-                      labelText: entry.key,
-                      border: const OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '${entry.key}を入力してください。';
-                      }
-                      return null;
-                    },
-                  ),
-                );
-              }).toList(),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitCharacter,
-                  child: const Text('登録'),
+        padding: EdgeInsets.all(16.w),
+        child: NeumorphicContainer(
+          radius: 16.r,
+          padding: EdgeInsets.all(16.w),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                _buildField('キャラクター名'),
+                Column(
+                  children: [
+                    Text('ステータスポイント', style: TextStyle(fontSize: 14.sp)),
+                    Text('残りポイント: ${totalPoints - usedPoints}', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                  ],
                 ),
+                ...statusFields.map(_buildStatusRow),
+                SizedBox(height: 12.h),
+                _buildField('攻撃スキル'),
+                _buildField('防御スキル'),
+                _buildField('必殺技'),
+                _buildField('必殺技説明'),
+                SizedBox(height: 20.h),
+                NeumorphicButton(
+                  onPressed: _submitCharacter,
+                  child: Center(
+                    child: Text(
+                      'キャラクターを作成',
+                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildNeumorphicAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(56.h),
+      child: NeumorphicContainer(
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text('キャラクター作成', style: TextStyle(fontSize: 18.sp)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusRow(String label) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 6.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('$label: ${statusValues[label]}', style: TextStyle(fontSize: 16.sp)),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.remove),
+                onPressed: statusValues[label]! > 0
+                    ? () => setState(() => statusValues[label] = statusValues[label]! - 1)
+                    : null,
+              ),
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: usedPoints < totalPoints
+                    ? () => setState(() => statusValues[label] = statusValues[label]! + 1)
+                    : null,
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildField(String label) {
+    final isMultiline = label == '必殺技説明';
+
+    return NeumorphicContainer(
+      radius: 12.r,
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: isMultiline ? 12.h : 0),
+      child: TextFormField(
+        controller: _controllers[label],
+        decoration: InputDecoration(
+          labelText: label,
+          border: InputBorder.none,
         ),
+        maxLines: isMultiline ? 5 : 1,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return '$labelを入力してください。';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -173,8 +200,16 @@ class CharacterCreationSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('キャラクター作成完了'),
+      backgroundColor: const Color(0xFFE0E5EC),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56.h),
+        child: NeumorphicContainer(
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Text('キャラクター作成', style: TextStyle(fontSize: 18.sp)),
+          ),
+        ),
       ),
       body: Center(
         child: Column(
