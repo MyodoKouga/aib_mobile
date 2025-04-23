@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/features/home/model/home_state.dart';
 import 'package:app/features/home/model/bottom_nav_item.dart';
@@ -114,7 +115,6 @@ class HomeViewModel extends StateNotifier<HomeState> {
   Future<void> fetchUserInfo() async {
     try {
       final userId = 1;
-
       final url = Uri.parse('http://localhost:8000/get/user_info');
       final response = await http.post(
         url,
@@ -127,32 +127,30 @@ class HomeViewModel extends StateNotifier<HomeState> {
       }
 
       final data = jsonDecode(response.body);
+
       final userName = data['user_name'] as String?;
-      final points = data['points'] as int;
-      final characterName = data['char_name'] as String?;
-      final battleFlg = data['battle_flg'] as int;
+      final points = int.tryParse('${data['user_point']}') ?? 0;
+      final characterName = data['mycharacter_name'] as String?;
+      final battleFlg = data['mycharacter_battle_flg'] as int;
+
+      Uint8List? characterImage;
+      final base64Image = data['mycharacter_image_path'] as String?;
+      if (base64Image != null) {
+        characterImage = base64Decode(base64Image);
+      }
+
       state = state.copyWith(
         isLoading: false,
         userName: userName,
         points: points,
         battleFlg: battleFlg,
         characterName: characterName,
-        characterImage: response.bodyBytes,
+        characterImage: characterImage,
       );
-
     } catch (e) {
-      state = state.copyWith(errorMessage: 'ポイントの取得に失敗しました');
+      debugPrint('エラー: $e');
+      state = state.copyWith(errorMessage: 'ユーザー情報の取得に失敗しました');
     }
-  }
-
-  void handleCreateButtonPress(BuildContext context) {
-    if (state.showTutorialOverlay) {
-      completeTutorial();
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const CreateCharacterScreen()),
-    );
   }
 
   void handleBattleButtonPress(BuildContext context) {

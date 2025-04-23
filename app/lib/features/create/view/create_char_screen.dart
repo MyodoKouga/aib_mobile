@@ -6,6 +6,7 @@ import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/features/create/model/create_char_model.dart';
 import 'package:app/features/create/view_model/create_char_view_model.dart';
+import 'package:app/features/home/view/widget/neumorphic_bottom_nav.dart';
 
 class CreateCharacterScreen extends ConsumerStatefulWidget {
   const CreateCharacterScreen({Key? key}) : super(key: key);
@@ -39,6 +40,11 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
       '防御スキル': TextEditingController(),
       '必殺技': TextEditingController(),
       '必殺技説明': TextEditingController(),
+      'HP': TextEditingController(text: statusValues['HP'].toString()),
+      'ATK': TextEditingController(text: statusValues['ATK'].toString()),
+      'DEF': TextEditingController(text: statusValues['DEF'].toString()),
+      'AGI': TextEditingController(text: statusValues['AGI'].toString()),
+      'LUK': TextEditingController(text: statusValues['LUK'].toString()),
     };
   }
 
@@ -53,20 +59,19 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
   Future<void> _submitCharacter() async {
     if (_formKey.currentState!.validate()) {
       final character = Character(
-        pattern: 'I1',
+        pattern: 'P1',
         userId: 3,
         characterName: _controllers['キャラクター名']!.text,
-        hp: int.tryParse(_controllers['HP']!.text) ?? 0,
-        atk: int.tryParse(_controllers['ATK']!.text) ?? 0,
-        def: int.tryParse(_controllers['DEF']!.text) ?? 0,
-        agi: int.tryParse(_controllers['AGI']!.text) ?? 0,
-        luk: int.tryParse(_controllers['LUK']!.text) ?? 0,
+        hp: statusValues['HP'] ?? 0,
+        atk: statusValues['ATK'] ?? 0,
+        def: statusValues['DEF'] ?? 0,
+        agi: statusValues['AGI'] ?? 0,
+        luk: statusValues['LUK'] ?? 0,
         attackSkill: _controllers['攻撃スキル']!.text,
         defenseSkill: _controllers['防御スキル']!.text,
         specialMove: _controllers['必殺技']!.text,
         specialDetail: _controllers['必殺技説明']!.text,
       );
-      
       final success = await ref.read(createCharViewModelProvider.notifier).submitCharacter(character);
 
       if (success) {
@@ -126,6 +131,7 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: NeumorphicBottomNav(),
     );
   }
 

@@ -33,12 +33,12 @@ class Character {
     "character_name": characterName,
     "hp": hp,
     "atk": atk,
-    "def": def,
-    "agi": agi,
-    "luk": luk,
+    "defense": def,
+    "spe": agi,
+    "luc": luk,
     "attack_skill": attackSkill,
     "defense_skill": defenseSkill,
     "special_move": specialMove,
-    "special_move_text": specialDetail,
+    "special_detail": specialDetail,
   };
 }
