@@ -56,7 +56,6 @@ class HomeTab extends ConsumerWidget {
     final containerHeight = screenHeight * 0.45;
     final innerPadding = screenHeight * 0.01;
     final sizedBoxHeightLarge = screenHeight * 0.02;
-    final sizedBoxHeightSmall = screenHeight * 0.02;
     final titleFontSize = screenHeight * 0.02;
     final textFontSize = screenHeight * 0.025;
 
@@ -96,7 +95,7 @@ class HomeTab extends ConsumerWidget {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              SizedBox(height: sizedBoxHeightLarge),
+                              // SizedBox(height: sizedBoxHeightLarge),
                               Text(
                                 homeState.characterName ?? '',
                                 style: TextStyle(
@@ -143,8 +142,8 @@ class HomeTab extends ConsumerWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    // '${homeState.points} p',
-                    '1000 p',
+                    '${homeState.points} p',
+                    // '1000 p',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16.sp,
@@ -242,8 +241,8 @@ class HomeTab extends ConsumerWidget {
 
   // バトル待機ウィジェット
   Widget _buildBattleStatus(HomeState homeState, WidgetRef ref) {
-    // final battleFlg = homeState.battleFlg;
-    final battleFlg = 2;
+    final battleFlg = homeState.battleFlg;
+    // final battleFlg = 2;
 
     final battleStatusMap = {
       0: 'バトル未参加',

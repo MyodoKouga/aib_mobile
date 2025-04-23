@@ -153,6 +153,18 @@ class HomeViewModel extends StateNotifier<HomeState> {
     }
   }
 
+  // キャラ作成画面へ遷移
+  void handleCreateButtonPress(BuildContext context) {
+  if (state.showTutorialOverlay) {
+    completeTutorial();
+  }
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const CreateCharacterScreen()),
+  );
+}
+
+  // シングルバトル設定へ遷移
   void handleBattleButtonPress(BuildContext context) {
     if (state.showTutorialOverlay) {
       completeTutorial();
