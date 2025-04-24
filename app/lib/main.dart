@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:app/features/onboarding/view/onboarding_screen.dart';
 import 'package:app/features/home/view/home_screen.dart';
+import 'package:app/shared/providers/providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,26 +37,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late BannerAd _bannerAd;
-
-  @override
-  void initState() {
-    super.initState();
-    RewardAdHelper.loadRewardedAd();
-
-    _bannerAd = BannerAd(
-      size: AdSize.banner,
-      adUnitId: 'ca-app-pub-3940256099942544/2934735716', // テスト用ID
-      listener: BannerAdListener(),
-      request: const AdRequest(),
-    )..load();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd.dispose(); // ← ちゃんと破棄！
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,33 +45,45 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return MaterialApp(
           title: 'AI Battle App',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: Scaffold(
-            body: Stack(
-              children: [
-                Positioned.fill(
-                  child: widget.isFirstLaunch
-                      ? const OnboardingScreen()
-                      : const HomeScreen(),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    color: Colors.white, // 背景で見切れ防止
-                    width: double.infinity,
-                    height: _bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: _bannerAd),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          theme: ThemeData(primarySwatch: Colors.blue),
+          builder: (context, child) {
+            return MainScaffold(child: child!); // ←全画面で共通バナー表示
+          },
+          home: widget.isFirstLaunch
+              ? const OnboardingScreen()
+              : const HomeScreen(),
         );
       },
+    );
+  }
+}
+
+// バナー
+class MainScaffold extends ConsumerWidget {
+  final Widget child;
+
+  const MainScaffold({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bannerAd = ref.watch(bannerAdProvider);
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(child: child),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Colors.white,
+              height: bannerAd.size.height.toDouble(),
+              child: AdWidget(ad: bannerAd),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

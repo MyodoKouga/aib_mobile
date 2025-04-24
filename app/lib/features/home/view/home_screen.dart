@@ -18,6 +18,7 @@ class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
+  // Homeの土台
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeViewModelProvider);
 
@@ -36,6 +37,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  // 上部バー
   PreferredSizeWidget _buildNeumorphicAppBar(BuildContext context, WidgetRef ref) {
     return PreferredSize(
       preferredSize: Size.fromHeight(56.h),
@@ -104,6 +106,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  // チュートリアル
   Widget _buildNeumorphicTutorialDialog(BuildContext context, WidgetRef ref) {
     return Container(
       color: Colors.black.withOpacity(0.5),
@@ -131,18 +134,6 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
-
-  // シンプル実装
-  // Widget _buildBody(HomeState state) {
-  //   switch (state.currentTab) {
-  //     case BottomNavItem.home:
-  //       return const HomeTab();
-  //     case BottomNavItem.battle:
-  //       return const BattleTab();
-  //     case BottomNavItem.profile:
-  //       return const ProfileTab();
-  //   }
-  // }
 
   // アニメーション付き画面の表示切り替え
   Widget _buildBody(HomeState state) {

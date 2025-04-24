@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +7,6 @@ import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/features/create/model/create_char_model.dart';
 import 'package:app/features/create/view_model/create_char_view_model.dart';
-import 'package:app/features/home/view/widget/neumorphic_bottom_nav.dart';
 
 class CreateCharacterScreen extends ConsumerStatefulWidget {
   const CreateCharacterScreen({Key? key}) : super(key: key);
@@ -107,7 +107,8 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
                 Column(
                   children: [
                     Text('ステータスポイント', style: TextStyle(fontSize: 14.sp)),
-                    Text('残りポイント: ${totalPoints - usedPoints}', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                    Text('残りポイント: ${totalPoints - usedPoints}',
+                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 ...statusFields.map(_buildStatusRow),
@@ -117,21 +118,21 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
                 _buildField('必殺技'),
                 _buildField('必殺技説明'),
                 SizedBox(height: 20.h),
-                NeumorphicButton(
-                  onPressed: _submitCharacter,
-                  child: Center(
-                    child: Text(
-                      'キャラクターを作成',
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-                    ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 197, 197, 197),
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+                  onPressed: _submitCharacter,
+                  child: const Text('キャラクターを作成'),
                 ),
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar: NeumorphicBottomNav(),
     );
   }
 

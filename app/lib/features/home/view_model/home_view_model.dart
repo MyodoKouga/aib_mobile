@@ -14,10 +14,8 @@ final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((r
 
 class HomeViewModel extends StateNotifier<HomeState> {
   HomeViewModel() : super(const HomeState()) {
-    fetchUserInfo(); // ポイントを取得
+    fetchUserInfo(); // ユーザー情報を取得
     // loadCharacters();
-    // fetchCharacterImage(); // キャラクター画像を取得
-    // fetchCharacterInfo(); // キャラクター情報を取得
   }
   void openNotificationModal() {
     state = state.copyWith(showNotificationModal: true);
@@ -50,67 +48,6 @@ class HomeViewModel extends StateNotifier<HomeState> {
       );
     }
   }
-
-  // Future<void> fetchCharacterImage() async {
-  //   state = state.copyWith(isLoading: true, errorMessage: null);
-
-  //   try {
-  //     final userId = 1;
-
-  //     final url = Uri.parse('http://localhost:8000/get/char_image');
-  //     final response = await http.post(
-  //       url,
-  //       headers: {'Content-Type': 'application/json'},
-  //       body: jsonEncode({'user_id': userId}),
-  //     );
-
-  //     if (response.statusCode != 200) {
-  //       throw Exception('サーバエラー: ${response.statusCode}');
-  //     }
-
-  //     state = state.copyWith(
-  //       isLoading: false,
-  //       characterImage: response.bodyBytes,
-  //     );
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       isLoading: false,
-  //       errorMessage: '画像の取得に失敗しました',
-  //     );
-  //   }
-  // }
-
-  // Future<void> fetchCharacterInfo() async {
-  //   state = state.copyWith(isLoading: true, errorMessage: null);
-
-  //   try {
-  //     final userId = 1;
-
-  //     final url = Uri.parse('http://localhost:8000/get/char_info');
-  //     final response = await http.post(
-  //       url,
-  //       headers: {'Content-Type': 'application/json'},
-  //       body: jsonEncode({'user_id': userId}),
-  //     );
-
-  //     if (response.statusCode != 200) {
-  //       throw Exception('サーバエラー: ${response.statusCode}');
-  //     }
-
-  //     final data = jsonDecode(response.body);
-  //     final characterName = data['char_name'] as String?;
-
-  //     state = state.copyWith(
-  //       isLoading: false,
-  //       characterName: characterName,
-  //     );
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       isLoading: false,
-  //       errorMessage: 'キャラクター情報の取得に失敗しました',
-  //     );
-  //   }
-  // }
 
   Future<void> fetchUserInfo() async {
     try {
@@ -160,7 +97,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (_) => const CreateCharacterScreen()),
+    MaterialPageRoute(builder: (_) => CreateCharacterScreen()),
   );
 }
 

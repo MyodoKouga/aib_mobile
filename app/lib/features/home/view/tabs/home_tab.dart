@@ -48,6 +48,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
+  // Homeメイン部分
   Widget _buildMainContent(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeViewModelProvider);
     final screenHeight = MediaQuery.of(context).size.height;
@@ -73,7 +74,7 @@ class HomeTab extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'マイキャラクター',
+                'メインキャラクター',
                 style: TextStyle(
                   fontSize: titleFontSize,
                   fontWeight: FontWeight.bold,
@@ -119,6 +120,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
   
+  // Home上部情報部分
   Widget _buildSubContent(BuildContext context, WidgetRef ref) {
     final screenHeight = MediaQuery.of(context).size.height;
     final subContainerHeight = screenHeight * 0.08;
@@ -164,7 +166,8 @@ class HomeTab extends ConsumerWidget {
       ),
     );
   }
-
+  
+  // キャラ作成ボタン
   Widget _buildCreateButton(BuildContext context, WidgetRef ref, HomeState homeState, double buttonHeight) {
     return SizedBox(
       height: buttonHeight,
@@ -182,6 +185,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
+  // バトルボタン
   Widget _buildBattleButton(BuildContext context, WidgetRef ref, HomeState homeState, double buttonHeight) {
     return SizedBox(
       height: buttonHeight,
@@ -199,6 +203,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
+  // リワード広告見るボタン
   Widget _buildAdButton(BuildContext context, WidgetRef ref, HomeState homeState, double buttonHeight) {
     return SizedBox(
       height: buttonHeight,
@@ -217,6 +222,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
+  // エラー表示
   Widget _buildErrorView(BuildContext context, WidgetRef ref, String error) {
     return Center(
       child: NeumorphicContainer(
@@ -289,6 +295,7 @@ class HomeTab extends ConsumerWidget {
     );
   }
 
+  // チュートリアルオーバーレイ
   Widget _buildTutorialOverlay(WidgetRef ref) {
     return ClipRect(
       child: BackdropFilter(
