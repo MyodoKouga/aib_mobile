@@ -3,18 +3,22 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/features/home/model/home_state.dart';
 import 'package:app/features/home/model/bottom_nav_item.dart';
+import 'package:app/shared/providers/providers.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:app/features/create/view/create_char_screen.dart';
 import 'package:app/features/battle/view/single_battle_screen.dart';
 
 final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((ref) {
-  return HomeViewModel();
+  final userId = ref.watch(userIdProvider);
+  return HomeViewModel(initialUserId: userId);
 });
 
 class HomeViewModel extends StateNotifier<HomeState> {
-  HomeViewModel() : super(const HomeState()) {
-    fetchUserInfo(); // ユーザー情報を取得
+  HomeViewModel({int? initialUserId}) : super(HomeState(userId: initialUserId)) {
+    if (initialUserId != null) {
+      fetchUserInfo(); // ユーザー情報を取得
+    }
     // loadCharacters();
   }
   void openNotificationModal() {
@@ -49,9 +53,16 @@ class HomeViewModel extends StateNotifier<HomeState> {
     }
   }
 
+  /// ユーザーIDを設定し情報を取得する
+  Future<void> initializeUser(int userId) async {
+    state = state.copyWith(userId: userId);
+    await fetchUserInfo();
+  }
+
   Future<void> fetchUserInfo() async {
+    final userId = state.userId;
+    if (userId == null) return;
     try {
-      final userId = 1;
       final url = Uri.parse('http://localhost:8000/get/user_info');
       final response = await http.post(
         url,
