@@ -16,7 +16,7 @@ void main() async {
   await MobileAds.instance.updateRequestConfiguration(config);
   await MobileAds.instance.initialize();
 
-  // プリロードでリワード広告を準備しておく
+  // リワード広告を読み込む
   RewardAdHelper.loadRewardedAd();
 
   // 初回起動判定
@@ -157,7 +157,8 @@ class RewardAdHelper {
       _rewardedAd = null;
       loadRewardedAd();
     } else {
-      print('⚠️ 広告がまだ読み込まれていません');
+      print('広告がまだ読み込まれていません。再読み込みします');
+      loadRewardedAd();
     }
   }
 
