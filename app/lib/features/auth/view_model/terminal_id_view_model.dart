@@ -39,3 +39,20 @@ class TerminalIdRegistrar extends Notifier<void> {
 /// NotifierProvider の定義（こっちだけ残す）
 final terminalIdRegisterProvider =
     NotifierProvider<TerminalIdRegistrar, void>(() => TerminalIdRegistrar());
+
+/// 端末IDからユーザーIDを取得するプロバイダー
+final userIdFromTerminalProvider =
+    FutureProvider.family<int?, String>((ref, terminalId) async {
+  final url = Uri.parse('http://localhost:8000/get/user_id');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'terminal_id': terminalId}),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return data['user_id'] as int?;
+  }
+  return null;
+});

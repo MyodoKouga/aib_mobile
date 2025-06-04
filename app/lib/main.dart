@@ -22,6 +22,7 @@ void main() async {
   // 初回起動判定
   final prefs = await SharedPreferences.getInstance();
   final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+  int? initialUserId;
 
   if (isFirstLaunch) {
     final container = ProviderContainer();
@@ -49,9 +50,31 @@ void main() async {
       container.dispose(); // ✅ ProviderContainerの破棄
     }
   }
+  else {
+    final container = ProviderContainer();
+    try {
+      var terminalId = prefs.getString('deviceId');
+      terminalId ??= await container.read(terminalIdProvider.future);
+      if (terminalId != null) {
+        final userId =
+            await container.read(userIdFromTerminalProvider(terminalId).future);
+        if (userId != null) {
+          initialUserId = userId;
+          await prefs.setInt('userId', userId);
+        }
+      }
+    } catch (e) {
+      print('❌ ユーザーID取得失敗: $e');
+    } finally {
+      container.dispose();
+    }
+  }
 
   runApp(
     ProviderScope(
+      overrides: [
+        userIdProvider.overrideWithValue(StateController<int?>(initialUserId)),
+      ],
       child: MyApp(isFirstLaunch: isFirstLaunch),
     ),
   );

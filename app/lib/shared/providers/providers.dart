@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+/// ユーザーIDを保持するプロバイダー
+final userIdProvider = StateProvider<int?>((ref) => null);
+
 final bannerAdProvider = Provider.autoDispose<BannerAd>((ref) {
   final ad = BannerAd(
     size: AdSize.banner,
