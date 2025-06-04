@@ -20,7 +20,13 @@ class SingleBattleCharacterSelectScreen extends ConsumerWidget {
     }
 
     final characters = characterListState.value!;
-    const int userId = 1; // TODO: 後で実際のユーザーIDに差し替える
+    final userId = ref.read(homeViewModelProvider).userId;
+    if (userId == null) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFE0E5EC),
+        body: Center(child: Text('ユーザーIDが取得できませんでした')),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(

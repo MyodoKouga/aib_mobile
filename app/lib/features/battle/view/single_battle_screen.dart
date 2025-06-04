@@ -58,7 +58,12 @@ onPressed: () async {
   debugPrint('[DEBUG] onPressedが呼ばれました');
   setState(() => _isLoading = true);
 
-  final userId = 1;
+  final userId = ref.read(homeViewModelProvider).userId;
+  if (userId == null) {
+    debugPrint('[ERROR] userId is null');
+    setState(() => _isLoading = false);
+    return;
+  }
   final charId = int.tryParse(homeState.myCharId!);
 
   debugPrint('[DEBUG] バトル開始ボタン: userId=$userId, charId=${homeState.myCharId}');

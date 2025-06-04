@@ -51,7 +51,11 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
   Future<void> fetchUserInfo() async {
     try {
-      final userId = 1;
+      final userId = state.userId;
+      if (userId == null) {
+        debugPrint('User ID is not set');
+        return;
+      }
       final url = Uri.parse('http://localhost:8000/get/user_info');
       final response = await http.post(
         url,

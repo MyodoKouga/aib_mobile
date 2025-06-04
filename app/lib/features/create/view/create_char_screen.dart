@@ -7,6 +7,7 @@ import 'package:app/features/home/view_model/list_view_model.dart';
 import 'package:app/features/create/model/create_char_model.dart';
 import 'package:app/features/create/view_model/create_char_view_model.dart';
 import 'package:app/features/battle/view/single_battle_screen.dart';
+import 'package:app/features/home/view_model/home_view_model.dart';
 
 class CreateCharacterScreen extends ConsumerStatefulWidget {
   const CreateCharacterScreen({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
     if (_formKey.currentState!.validate()) {
       final character = Character(
         pattern: 'P1',
-        userId: 1,
+        userId: ref.read(homeViewModelProvider).userId!,
         characterName: _controllers['キャラクター名']!.text,
         hp: statusValues['HP'] ?? 0,
         atk: statusValues['ATK'] ?? 0,

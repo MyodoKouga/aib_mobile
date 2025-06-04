@@ -16,10 +16,11 @@ class CharacterListViewModel extends AsyncNotifier<List<Character>> {
   Future<List<Character>> _fetchCharacters() async {
     try {
       final url = Uri.parse('http://localhost:8000/get/char_list');
+      final userId = ref.read(homeViewModelProvider).userId;
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user_id': 1}),
+        body: jsonEncode({'user_id': userId}),
       );
 
       if (response.statusCode != 200) {
