@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:app/features/auth/view_model/auth_view_model.dart';
 import '../../../home/view/home_screen.dart';
 import '../../../home/view_model/home_view_model.dart';
+import 'package:app/features/auth/view_model/terminal_id_view_model.dart';
 
 class SignupDialog extends ConsumerStatefulWidget {
   const SignupDialog({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
+    final terminalIdAsync = ref.watch(terminalIdProvider);
 
     // ダイアログをフルスクリーンではなく、AlertDialogベースで作る例
     return AlertDialog(
@@ -113,9 +115,11 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                     return;
                   }
 
+                  final terminalId = await ref.read(terminalIdProvider.future) ?? '';
+
                   await ref
                       .read(authViewModelProvider.notifier)
-                      .signUpWithUsernameEmailAndPassword(username, email, password);
+                      .signUpWithUsernameEmailAndPassword(username, email, password, terminalId);
 
                   // 登録が成功したかをチェック
                   final updatedState = ref.read(authViewModelProvider);

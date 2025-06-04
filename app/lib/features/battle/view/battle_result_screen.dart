@@ -1,12 +1,20 @@
-import 'dart:math';
+//battle_result_screen.dart
+
 import 'package:flutter/material.dart';
 
 class BattleResultScreen extends StatelessWidget {
-  const BattleResultScreen({super.key});
+  final String battleResult; // "勝ち" など
+  final String battleSummary; // 詳細ログ
+
+  const BattleResultScreen({
+    Key? key,
+    required this.battleResult,
+    required this.battleSummary,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final bool isVictory = Random().nextBool();
+    final bool isVictory = battleResult.contains('勝');
     final String resultText = isVictory ? '勝利' : '敗北';
     final Color resultColor = isVictory ? Colors.green : Colors.red;
 
@@ -16,6 +24,7 @@ class BattleResultScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // 勝敗カード
           Container(
             height: MediaQuery.of(context).size.height * 0.25,
             margin: const EdgeInsets.all(16.0),
@@ -36,6 +45,7 @@ class BattleResultScreen extends StatelessWidget {
             ),
           ),
 
+          // バトル詳細表示
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -46,29 +56,26 @@ class BattleResultScreen extends StatelessWidget {
                 ),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16.0),
-                  child: const Text(
-                    'ここに対戦の詳細が表示されます。\n\n'
-                    '対戦の結果や使用されたキャラクターのステータス、ダメージの履歴などの情報を表示します。\n\n'
-                    'このテキストエリアはスクロール可能です。',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    battleSummary,
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
             ),
           ),
 
+          // 戻るボタン
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
                 child: const Text('選択画面に戻る'),
               ),
             ),

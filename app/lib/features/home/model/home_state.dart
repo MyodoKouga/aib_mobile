@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'bottom_nav_item.dart';
@@ -24,6 +25,7 @@ class HomeState with _$HomeState {
 
     // ユーザー情報
     String? userName,
+    int? userId,
     String? myCharId,
     @Default(0) int battleFlg,
     @Default(0) int points,

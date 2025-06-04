@@ -1,10 +1,9 @@
 import 'dart:ui';
-import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
+import 'package:app/features/home/view_model/list_view_model.dart';
 import 'package:app/features/create/model/create_char_model.dart';
 import 'package:app/features/create/view_model/create_char_view_model.dart';
 
@@ -60,7 +59,7 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
     if (_formKey.currentState!.validate()) {
       final character = Character(
         pattern: 'P1',
-        userId: 3,
+        userId: 1,
         characterName: _controllers['キャラクター名']!.text,
         hp: statusValues['HP'] ?? 0,
         atk: statusValues['ATK'] ?? 0,
@@ -201,11 +200,11 @@ class _CreateCharacterScreenState extends ConsumerState<CreateCharacterScreen> {
   }
 }
 
-class CharacterCreationSuccessPage extends StatelessWidget {
+class CharacterCreationSuccessPage extends ConsumerWidget {
   const CharacterCreationSuccessPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFE0E5EC),
       appBar: PreferredSize(
@@ -229,6 +228,7 @@ class CharacterCreationSuccessPage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
+                ref.invalidate(characterListProvider); // ← これで再読み込みされる！
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: const Text('Homeへ'),
@@ -236,6 +236,7 @@ class CharacterCreationSuccessPage extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
+                ref.invalidate(characterListProvider);
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: const Text('バトルへ'),

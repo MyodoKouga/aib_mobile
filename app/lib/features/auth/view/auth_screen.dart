@@ -49,6 +49,28 @@ class AuthScreen extends ConsumerWidget {
               ),
               SizedBox(height: 16.h),
 
+              // 引き継ぎ
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // showDialogを使ってモーダルを開く
+                    showDialog(
+                      context: context,
+                      builder: (_) => const SignupDialog(),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    child: Text(
+                      'アカウントを引き継ぐ',
+                      style: TextStyle(fontSize: 16.sp),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+
               // スキップボタン
               TextButton(
                 onPressed: () {
@@ -62,7 +84,7 @@ class AuthScreen extends ConsumerWidget {
                 },
                 child: Text(
                   'スキップして始める',
-                  style: TextStyle(fontSize: 16.sp),
+                  style: TextStyle(fontSize: 12.sp),
                 ),
               ),
             ],

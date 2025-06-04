@@ -6,19 +6,45 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:app/features/onboarding/view/onboarding_screen.dart';
 import 'package:app/features/home/view/home_screen.dart';
 import 'package:app/shared/providers/providers.dart';
+import 'dart:io';
+import 'package:app/features/auth/view_model/terminal_id_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   final config = RequestConfiguration(testDeviceIds: ['SIMULATOR']);
   await MobileAds.instance.updateRequestConfiguration(config);
-
-  // AdMobの初期化
   await MobileAds.instance.initialize();
 
-  // 初回起動判定
   final prefs = await SharedPreferences.getInstance();
   final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+
+  if (isFirstLaunch) {
+    final container = ProviderContainer();
+
+    try {
+      final terminalId = await container.read(terminalIdProvider.future);
+      if (terminalId != null) {
+        final success = await container
+            .read(terminalIdRegisterProvider.notifier) // ✅ 修正ここ
+            .registerTerminalId(terminalId); // ✅ メソッド名修正
+
+        if (success) {
+          print('✅ 初回端末ID登録: $terminalId');
+          await prefs.setString('deviceId', terminalId);
+          await prefs.setBool('isFirstLaunch', false);
+        } else {
+          print('❌ 端末ID登録失敗');
+        }
+      } else {
+        print('❌ 端末ID取得失敗');
+      }
+    } catch (e) {
+      print('❌ 端末ID処理中にエラー: $e');
+    } finally {
+      container.dispose(); // ✅ ProviderContainerの破棄
+    }
+  }
 
   runApp(
     ProviderScope(
@@ -37,7 +63,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -47,7 +72,7 @@ class _MyAppState extends State<MyApp> {
           title: 'AI Battle App',
           theme: ThemeData(primarySwatch: Colors.blue),
           builder: (context, child) {
-            return MainScaffold(child: child!); // ←全画面で共通バナー表示
+            return MainScaffold(child: child!);
           },
           home: widget.isFirstLaunch
               ? const OnboardingScreen()
@@ -58,7 +83,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// バナー
 class MainScaffold extends ConsumerWidget {
   final Widget child;
 
@@ -89,32 +113,28 @@ class MainScaffold extends ConsumerWidget {
 }
 
 class RewardAdHelper {
-  // リワード広告
-  static RewardedAd? _rewardedAd; // ← 広告の変数
+  static RewardedAd? _rewardedAd;
 
-  // 広告を読み込む関数
   static void loadRewardedAd() {
     RewardedAd.load(
-      adUnitId: 'ca-app-pub-3940256099942544/5224354917', // テスト広告ID
+      adUnitId: 'ca-app-pub-3940256099942544/5224354917',
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
-          _rewardedAd = ad; // 読み込み成功
+          _rewardedAd = ad;
         },
         onAdFailedToLoad: (error) {
-          print('広告の読み込み失敗: $error');
+          print('❌ 広告読み込み失敗: $error');
         },
       ),
     );
   }
 
-  // 広告を表示する関数
   static void showRewardedAd(BuildContext context) {
     if (_rewardedAd != null) {
       _rewardedAd!.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-          print('ユーザーが報酬を獲得しました！');
-          // 🔥 ポップアップを表示
+          print('🎉 ユーザーが報酬を獲得！');
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -131,13 +151,13 @@ class RewardAdHelper {
         },
       );
       _rewardedAd = null;
-      loadRewardedAd(); // 次の広告も読み込んでおく
+      loadRewardedAd();
     } else {
-      print('広告がまだ読み込まれていません');
+      print('⚠️ 広告がまだ読み込まれていません');
     }
   }
 
   static void onRewardEarned() {
-    
+    // 必要があれば処理追加
   }
 }

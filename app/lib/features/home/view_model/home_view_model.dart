@@ -6,7 +6,7 @@ import 'package:app/features/home/model/bottom_nav_item.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:app/features/create/view/create_char_screen.dart';
-import 'package:app/features/battle/view/single_battle_patterns_screen.dart';
+import 'package:app/features/battle/view/single_battle_screen.dart';
 
 final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((ref) {
   return HomeViewModel();
@@ -64,11 +64,12 @@ class HomeViewModel extends StateNotifier<HomeState> {
       }
 
       final data = jsonDecode(response.body);
+      debugPrint('サーバーからのレスポンス: $data');
 
       final userName = data['user_name'] as String?;
       final points = int.tryParse('${data['user_point']}') ?? 0;
       final characterName = data['mycharacter_name'] as String?;
-      final battleFlg = data['mycharacter_battle_flg'] as int;
+      final battleFlg = data['battle_wait_flg'] as int;
 
       Uint8List? characterImage;
       final base64Image = data['mycharacter_image_path'] as String?;
@@ -101,14 +102,14 @@ class HomeViewModel extends StateNotifier<HomeState> {
   );
 }
 
-  // シングルバトル設定へ遷移
+  // シングルバトル画面へ遷移
   void handleBattleButtonPress(BuildContext context) {
     if (state.showTutorialOverlay) {
       completeTutorial();
     }
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const SingleBattlePatternsScreen()),
+      MaterialPageRoute(builder: (_) => SingleBattleScreen()),
     );
   }
 

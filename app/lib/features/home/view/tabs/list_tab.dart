@@ -6,6 +6,7 @@ import 'package:app/features/home/view_model/list_view_model.dart';
 import 'package:app/features/home/view_model/home_view_model.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
+import 'package:app/features/home/view_model/character_detail_view_model.dart';
 
 class ListTab extends ConsumerWidget {
   const ListTab({super.key});
@@ -53,16 +54,28 @@ class ListTab extends ConsumerWidget {
                                 final char = characterList[index];
 
                                 return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => CharacterDetailScreen(
-                                          name: char.name,
-                                          image: char.image,
-                                        ),
-                                      ),
+                                  onTap: () async {
+                                    // final userId = ref.read(homeViewModelProvider).userId; // ユーザーIDの取得（Riverpod）
+                                    final userId = 1;//テスト用
+                                    final detail = await fetchCharacterDetail(
+                                      userId: userId,
+                                      charId: char.id,
+                                      name: char.name,
+                                      image: char.image,
                                     );
+
+                                    if (detail != null) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => CharacterDetailScreen(character: detail),
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('キャラクター詳細の取得に失敗しました')),
+                                      );
+                                    }
                                   },
                                   borderRadius: BorderRadius.circular(12),
                                   child: NeumorphicContainer(

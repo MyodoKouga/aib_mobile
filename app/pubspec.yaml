@@ -27,6 +27,7 @@ dependencies:
   flutter_secure_storage: ^4.2.1
   shared_preferences: ^2.3.5
   image_picker: ^1.0.7
+  device_info_plus: ^10.1.0 # 端末ID
 
 dev_dependencies:
   flutter_test:

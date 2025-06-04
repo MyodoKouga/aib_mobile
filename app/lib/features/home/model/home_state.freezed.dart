@@ -30,6 +30,7 @@ mixin _$HomeState {
   String? get characterName => throw _privateConstructorUsedError;
   String? get specialMove => throw _privateConstructorUsedError; // ユーザー情報
   String? get userName => throw _privateConstructorUsedError;
+  int? get userId => throw _privateConstructorUsedError;
   String? get myCharId => throw _privateConstructorUsedError;
   int get battleFlg => throw _privateConstructorUsedError;
   int get points => throw _privateConstructorUsedError; // お知らせモーダル
@@ -59,6 +60,7 @@ abstract class $HomeStateCopyWith<$Res> {
       String? characterName,
       String? specialMove,
       String? userName,
+      int? userId,
       String? myCharId,
       int battleFlg,
       int points,
@@ -91,6 +93,7 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? characterName = freezed,
     Object? specialMove = freezed,
     Object? userName = freezed,
+    Object? userId = freezed,
     Object? myCharId = freezed,
     Object? battleFlg = null,
     Object? points = null,
@@ -141,6 +144,10 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String?,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as int?,
       myCharId: freezed == myCharId
           ? _value.myCharId
           : myCharId // ignore: cast_nullable_to_non_nullable
@@ -181,6 +188,7 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       String? characterName,
       String? specialMove,
       String? userName,
+      int? userId,
       String? myCharId,
       int battleFlg,
       int points,
@@ -211,6 +219,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? characterName = freezed,
     Object? specialMove = freezed,
     Object? userName = freezed,
+    Object? userId = freezed,
     Object? myCharId = freezed,
     Object? battleFlg = null,
     Object? points = null,
@@ -261,6 +270,10 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String?,
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as int?,
       myCharId: freezed == myCharId
           ? _value.myCharId
           : myCharId // ignore: cast_nullable_to_non_nullable
@@ -296,6 +309,7 @@ class _$HomeStateImpl implements _HomeState {
       this.characterName,
       this.specialMove,
       this.userName,
+      this.userId,
       this.myCharId,
       this.battleFlg = 0,
       this.points = 0,
@@ -341,6 +355,8 @@ class _$HomeStateImpl implements _HomeState {
   @override
   final String? userName;
   @override
+  final int? userId;
+  @override
   final String? myCharId;
   @override
   @JsonKey()
@@ -355,7 +371,7 @@ class _$HomeStateImpl implements _HomeState {
 
   @override
   String toString() {
-    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay, characterImage: $characterImage, characterName: $characterName, specialMove: $specialMove, userName: $userName, myCharId: $myCharId, battleFlg: $battleFlg, points: $points, showNotificationModal: $showNotificationModal)';
+    return 'HomeState(currentTab: $currentTab, isLoading: $isLoading, errorMessage: $errorMessage, characters: $characters, isFirstLogin: $isFirstLogin, showTutorialDialog: $showTutorialDialog, showTutorialOverlay: $showTutorialOverlay, characterImage: $characterImage, characterName: $characterName, specialMove: $specialMove, userName: $userName, userId: $userId, myCharId: $myCharId, battleFlg: $battleFlg, points: $points, showNotificationModal: $showNotificationModal)';
   }
 
   @override
@@ -385,6 +401,7 @@ class _$HomeStateImpl implements _HomeState {
                 other.specialMove == specialMove) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.myCharId, myCharId) ||
                 other.myCharId == myCharId) &&
             (identical(other.battleFlg, battleFlg) ||
@@ -408,6 +425,7 @@ class _$HomeStateImpl implements _HomeState {
       characterName,
       specialMove,
       userName,
+      userId,
       myCharId,
       battleFlg,
       points,
@@ -435,6 +453,7 @@ abstract class _HomeState implements HomeState {
       final String? characterName,
       final String? specialMove,
       final String? userName,
+      final int? userId,
       final String? myCharId,
       final int battleFlg,
       final int points,
@@ -463,6 +482,8 @@ abstract class _HomeState implements HomeState {
   String? get specialMove; // ユーザー情報
   @override
   String? get userName;
+  @override
+  int? get userId;
   @override
   String? get myCharId;
   @override

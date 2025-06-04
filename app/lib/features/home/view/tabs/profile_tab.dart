@@ -207,6 +207,22 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                       ],
                     ),
                   ),
+                // ポイント交換ボタン
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      //ポイント交換処理
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      child: Text(
+                        'ポイントを交換する',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

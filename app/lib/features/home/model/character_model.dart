@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 class Character {
+  final int id;
   final String name;
   final Uint8List? image;
 
   Character({
+    required this.id,
     required this.name,
     this.image,
   });
@@ -19,6 +21,7 @@ class Character {
     }
 
     return Character(
+      id: json['char_id'] as int,
       name: json['char_name'] as String,
       image: imageBytes,
     );
