@@ -19,6 +19,7 @@ void main() async {
   // プリロードでリワード広告を準備しておく
   RewardAdHelper.loadRewardedAd();
 
+  // 初回起動判定
   final prefs = await SharedPreferences.getInstance();
   final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
 
