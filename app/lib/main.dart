@@ -16,6 +16,9 @@ void main() async {
   // AdMobの初期化
   await MobileAds.instance.initialize();
 
+  // リワード広告を読み込む
+  RewardAdHelper.loadRewardedAd();
+
   // 初回起動判定
   final prefs = await SharedPreferences.getInstance();
   final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
@@ -133,7 +136,8 @@ class RewardAdHelper {
       _rewardedAd = null;
       loadRewardedAd(); // 次の広告も読み込んでおく
     } else {
-      print('広告がまだ読み込まれていません');
+      print('広告がまだ読み込まれていません。再読み込みします');
+      loadRewardedAd();
     }
   }
 
