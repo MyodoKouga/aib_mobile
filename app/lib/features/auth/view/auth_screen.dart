@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../home/view/home_screen.dart';
 import 'package:app/features/auth/view/widget/signup_dialog.dart';
 import '../../home/view_model/home_view_model.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 
 class AuthScreen extends ConsumerWidget {
   const AuthScreen({super.key});
@@ -30,7 +31,8 @@ class AuthScreen extends ConsumerWidget {
               // モーダルを開くボタン
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: NeumorphicButton(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                   onPressed: () {
                     // showDialogを使ってモーダルを開く
                     showDialog(
@@ -38,12 +40,9 @@ class AuthScreen extends ConsumerWidget {
                       builder: (_) => const SignupDialog(),
                     );
                   },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    child: Text(
-                      'メールアドレスで登録',
-                      style: TextStyle(fontSize: 16.sp),
-                    ),
+                  child: Text(
+                    'メールアドレスで登録',
+                    style: TextStyle(fontSize: 16.sp),
                   ),
                 ),
               ),
@@ -52,7 +51,8 @@ class AuthScreen extends ConsumerWidget {
               // 引き継ぎ
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: NeumorphicButton(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                   onPressed: () {
                     // showDialogを使ってモーダルを開く
                     showDialog(
@@ -60,19 +60,20 @@ class AuthScreen extends ConsumerWidget {
                       builder: (_) => const SignupDialog(),
                     );
                   },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    child: Text(
-                      'アカウントを引き継ぐ',
-                      style: TextStyle(fontSize: 16.sp),
-                    ),
+                  child: Text(
+                    'アカウントを引き継ぐ',
+                    style: TextStyle(fontSize: 16.sp),
                   ),
                 ),
               ),
               SizedBox(height: 16.h),
 
               // スキップボタン
-              TextButton(
+              NeumorphicButton(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 8.h,
+                ),
                 onPressed: () {
                   // HomeScreenへ遷移前にチュートリアル初期化
                   ref.read(homeViewModelProvider.notifier).initializeTutorial();

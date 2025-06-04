@@ -257,25 +257,19 @@ class HomeTab extends ConsumerWidget {
     };
 
     if (battleFlg == 2) {
-      return TextButton(
+      return NeumorphicButton(
+        padding: EdgeInsets.symmetric(
+          horizontal: 18.w,
+          vertical: 12.h,
+        ),
         onPressed: () {
           // バトル終了後の処理（結果を見る画面へ）
           print('バトル終了ボタン押下');
         },
-        style: TextButton.styleFrom(
-          backgroundColor: Colors.green,
-          padding: EdgeInsets.symmetric(
-            horizontal: 18.w,
-            vertical: 12.h,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-        ),
         child: Text(
           battleStatusMap[battleFlg]!,
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.green,
             fontWeight: FontWeight.bold,
             fontSize: 16.sp,
           ),

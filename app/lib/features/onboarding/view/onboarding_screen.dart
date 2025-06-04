@@ -6,6 +6,7 @@ import 'package:app/features/auth/view/auth_screen.dart';
 import 'package:app/features/onboarding/view_model/onboarding_view_model.dart';
 import 'package:app/features/onboarding/view/onboarding_page.dart';
 import 'package:app/features/onboarding/model/onboarding_content.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -94,7 +95,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ),
                     ),
                   ),
-                  TextButton(
+                  NeumorphicButton(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 8.h,
+                    ),
                     onPressed: _onNextPressed,
                     child: Text(
                       currentPage < pages.length - 1 ? '次へ' : '始める',

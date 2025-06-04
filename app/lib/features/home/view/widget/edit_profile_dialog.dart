@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 
 class EditProfileDialog extends StatefulWidget {
   final String title;
@@ -82,11 +83,13 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         ),
       ),
       actions: [
-        TextButton(
+        NeumorphicButton(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           onPressed: () => Navigator.pop(context),
           child: const Text("キャンセル"),
         ),
-        ElevatedButton(
+        NeumorphicButton(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           onPressed: (!isInputValid || !_hasChanges)
               ? null // 無効な入力または変更がない場合は無効化
               : () {

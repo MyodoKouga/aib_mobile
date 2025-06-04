@@ -5,6 +5,7 @@ import 'package:app/features/auth/view_model/auth_view_model.dart';
 import '../../../home/view/home_screen.dart';
 import '../../../home/view_model/home_view_model.dart';
 import 'package:app/features/auth/view_model/terminal_id_view_model.dart';
+import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 
 class SignupDialog extends ConsumerStatefulWidget {
   const SignupDialog({Key? key}) : super(key: key);
@@ -82,7 +83,8 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
       ),
       actions: [
         // キャンセルボタン
-        TextButton(
+        NeumorphicButton(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           onPressed: authState.isLoading
               ? null
               : () {
@@ -93,7 +95,8 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
         ),
 
         // 登録ボタン
-        ElevatedButton(
+        NeumorphicButton(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           onPressed: authState.isLoading
               ? null
               : () async {
