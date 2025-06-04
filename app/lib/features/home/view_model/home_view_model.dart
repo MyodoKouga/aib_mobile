@@ -63,6 +63,11 @@ class HomeViewModel extends StateNotifier<HomeState> {
     final userId = state.userId;
     if (userId == null) return;
     try {
+      final userId = state.userId;
+      if (userId == null) {
+        debugPrint('User ID is not set');
+        return;
+      }
       final url = Uri.parse('http://localhost:8000/get/user_info');
       final response = await http.post(
         url,

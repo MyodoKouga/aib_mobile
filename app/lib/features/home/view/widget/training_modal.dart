@@ -3,6 +3,7 @@ import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/features/home/view_model/training_modal_view_model.dart';
+import 'package:app/features/home/view_model/home_view_model.dart';
 
 class TrainingModal extends ConsumerStatefulWidget {
   final Map<String, int> initialStats;
@@ -84,7 +85,7 @@ class _TrainingModalState extends ConsumerState<TrainingModal> {
                               ),
                             );
                             if (confirm == true) {
-                              final userId = 1;
+                              final userId = ref.read(homeViewModelProvider).userId;
                               final success1 = await TrainingModalViewModel.submitTraining(
                                 userId: userId,
                                 charId: widget.charId,

@@ -57,7 +57,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
 
     if (updatedStats != null) {
       final updated = await fetchCharacterDetail(
-        userId: 1,
+        userId: ref.read(homeViewModelProvider).userId!,
         charId: character.id,
         name: character.name,
         image: character.image,
@@ -130,7 +130,8 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                     padding: EdgeInsets.zero,
                     child: IconButton(
                       onPressed: () async {
-                        final userId = 1;
+                        final userId = ref.read(homeViewModelProvider).userId;
+                        if (userId == null) return;
                         final success = await updateMainCharacter(userId: userId, charId: character.id);
                         if (success && mounted) {
                           setState(() => character.isMainChar = 1);
@@ -183,7 +184,8 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                         );
 
                         if (confirm == true) {
-                          final userId = 1;
+                          final userId = ref.read(homeViewModelProvider).userId;
+                          if (userId == null) return;
                           final success = await deleteCharacter(userId: userId, charId: character.id);
                           if (success && context.mounted) {
                             ref.invalidate(characterListProvider);

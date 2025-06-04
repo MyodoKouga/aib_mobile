@@ -55,8 +55,7 @@ class ListTab extends ConsumerWidget {
 
                                 return InkWell(
                                   onTap: () async {
-                                    // final userId = ref.read(homeViewModelProvider).userId; // ユーザーIDの取得（Riverpod）
-                                    final userId = 1;//テスト用
+                                    final userId = ref.read(homeViewModelProvider).userId;
                                     final detail = await fetchCharacterDetail(
                                       userId: userId,
                                       charId: char.id,
