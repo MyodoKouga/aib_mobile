@@ -6,6 +6,7 @@ import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/features/home/view_model/list_view_model.dart';
 import 'package:app/features/create/model/create_char_model.dart';
 import 'package:app/features/create/view_model/create_char_view_model.dart';
+import 'package:app/features/battle/view/single_battle_patterns_screen.dart';
 
 class CreateCharacterScreen extends ConsumerStatefulWidget {
   const CreateCharacterScreen({Key? key}) : super(key: key);
@@ -238,6 +239,12 @@ class CharacterCreationSuccessPage extends ConsumerWidget {
               onPressed: () {
                 ref.invalidate(characterListProvider);
                 Navigator.popUntil(context, (route) => route.isFirst);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SingleBattlePatternsScreen(),
+                  ),
+                );
               },
               child: const Text('バトルへ'),
             ),
