@@ -237,9 +237,7 @@ class CharacterCreationSuccessPage extends ConsumerWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                ref.invalidate(characterListProvider);
-                Navigator.popUntil(context, (route) => route.isFirst);
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (_) => const SingleBattlePatternsScreen(),
