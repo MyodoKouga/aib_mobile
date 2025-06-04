@@ -16,6 +16,9 @@ void main() async {
   await MobileAds.instance.updateRequestConfiguration(config);
   await MobileAds.instance.initialize();
 
+  // プリロードでリワード広告を準備しておく
+  RewardAdHelper.loadRewardedAd();
+
   final prefs = await SharedPreferences.getInstance();
   final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
 
