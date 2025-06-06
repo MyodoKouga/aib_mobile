@@ -62,9 +62,22 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                                 builder: (_) => EditProfileDialog(
                                   title: 'ユーザー名編集',
                                   currentValue: profile.username,
-                                  onSave: (value) {
+                                  onSave: (value) async {
                                     if (userId != null) {
-                                      profileNotifier.updateUsername(userId, value);
+                                      final success = await profileNotifier
+                                          .updateUsername(userId, value);
+                                      final updated =
+                                          ref.read(profileViewModelProvider);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            success
+                                                ? 'ユーザー名を更新しました'
+                                                : updated.errorMessage ??
+                                                    'ユーザー名の更新に失敗しました',
+                                          ),
+                                        ),
+                                      );
                                     }
                                   },
                                 ),

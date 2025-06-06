@@ -61,14 +61,27 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
               : () async {
                   final oldPass = _oldPasswordController.text.trim();
                   final newPass = _newPasswordController.text.trim();
-                  if (userId != null && oldPass.isNotEmpty && newPass.isNotEmpty) {
+                  if (userId != null &&
+                      oldPass.isNotEmpty &&
+                      newPass.isNotEmpty) {
                     final success = await notifier.changePassword(
                       userId: userId,
                       oldPassword: oldPass,
                       newPassword: newPass,
                     );
-                    if (success && mounted) {
+                    final updated = ref.read(profileViewModelProvider);
+                    if (mounted) {
                       Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            success
+                                ? 'パスワードを変更しました'
+                                : updated.errorMessage ??
+                                    'パスワードの変更に失敗しました',
+                          ),
+                        ),
+                      );
                     }
                   }
                 },
