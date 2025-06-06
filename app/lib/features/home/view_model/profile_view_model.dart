@@ -106,12 +106,15 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
       final isGuest = newUsername == 'ゲスト';
       await prefs.setBool('isGuest', isGuest);
 
+      final isProfileComplete =
+          state.copyWith(username: newUsername).hasCompleteProfile;
+
       state = state.copyWith(
         username: newUsername,
         isGuest: isGuest,
         lastUpdated: now,
         isLoading: false,
-        isProfileComplete: state.hasCompleteProfile,
+        isProfileComplete: isProfileComplete,
       );
     } catch (e) {
       state = state.copyWith(
