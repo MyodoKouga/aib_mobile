@@ -15,11 +15,14 @@ class ChangeEmailDialog extends ConsumerStatefulWidget {
 class _ChangeEmailDialogState extends ConsumerState<ChangeEmailDialog> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  String? _message;
+  bool _isSuccess = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    ref.read(profileViewModelProvider.notifier).resetErrorMessage();
     super.dispose();
   }
 
@@ -36,6 +39,17 @@ class _ChangeEmailDialogState extends ConsumerState<ChangeEmailDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (_message != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  _message!,
+                  style: TextStyle(
+                    color: _isSuccess ? Colors.green : Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: '新しいメールアドレス'),
@@ -66,8 +80,19 @@ class _ChangeEmailDialogState extends ConsumerState<ChangeEmailDialog> {
                       password: password,
                       newEmail: newEmail,
                     );
-                    if (success && mounted) {
+                    if (!mounted) return;
+                    if (success) {
+                      setState(() {
+                        _message = 'メールアドレスを変更しました。';
+                        _isSuccess = true;
+                      });
+                      await Future.delayed(const Duration(seconds: 1));
                       Navigator.pop(context);
+                    } else {
+                      setState(() {
+                        _message = ref.read(profileViewModelProvider).errorMessage;
+                        _isSuccess = false;
+                      });
                     }
                   }
                 },
