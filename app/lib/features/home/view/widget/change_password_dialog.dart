@@ -15,11 +15,14 @@ class ChangePasswordDialog extends ConsumerStatefulWidget {
 class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
+  String? _message;
+  bool _isSuccess = false;
 
   @override
   void dispose() {
     _oldPasswordController.dispose();
     _newPasswordController.dispose();
+    ref.read(profileViewModelProvider.notifier).resetErrorMessage();
     super.dispose();
   }
 
@@ -36,6 +39,17 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (_message != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  _message!,
+                  style: TextStyle(
+                    color: _isSuccess ? Colors.green : Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
             TextField(
               controller: _oldPasswordController,
               decoration: const InputDecoration(labelText: '現在のパスワード'),
@@ -67,8 +81,19 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                       oldPassword: oldPass,
                       newPassword: newPass,
                     );
-                    if (success && mounted) {
+                    if (!mounted) return;
+                    if (success) {
+                      setState(() {
+                        _message = 'パスワードを変更しました。';
+                        _isSuccess = true;
+                      });
+                      await Future.delayed(const Duration(seconds: 1));
                       Navigator.pop(context);
+                    } else {
+                      setState(() {
+                        _message = ref.read(profileViewModelProvider).errorMessage;
+                        _isSuccess = false;
+                      });
                     }
                   }
                 },
