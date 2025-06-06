@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/features/home/model/character_model.dart';
+import 'package:app/features/home/view_model/home_view_model.dart';
 import 'package:http/http.dart' as http;
 
 final characterListProvider = AsyncNotifierProvider<CharacterListViewModel, List<Character>>(

@@ -85,7 +85,7 @@ class _TrainingModalState extends ConsumerState<TrainingModal> {
                               ),
                             );
                             if (confirm == true) {
-                              final userId = ref.read(homeViewModelProvider).userId;
+                              final userId = ref.read(homeViewModelProvider).userId!;
                               final success1 = await TrainingModalViewModel.submitTraining(
                                 userId: userId,
                                 charId: widget.charId,

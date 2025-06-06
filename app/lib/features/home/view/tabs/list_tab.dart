@@ -55,7 +55,7 @@ class ListTab extends ConsumerWidget {
 
                                 return InkWell(
                                   onTap: () async {
-                                    final userId = ref.read(homeViewModelProvider).userId;
+                                    final userId = ref.read(homeViewModelProvider).userId!;
                                     final detail = await fetchCharacterDetail(
                                       userId: userId,
                                       charId: char.id,

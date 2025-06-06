@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../view_model/profile_view_model.dart';
 import '../../view_model/home_view_model.dart';
 import '../widget/account_settings_dialog.dart';
+import '../widget/edit_profile_dialog.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 

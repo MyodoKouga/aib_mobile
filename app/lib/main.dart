@@ -73,7 +73,7 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        userIdProvider.overrideWithValue(StateController<int?>(initialUserId)),
+        userIdProvider.overrideWith((ref) => initialUserId),
       ],
       child: MyApp(isFirstLaunch: isFirstLaunch),
     ),
