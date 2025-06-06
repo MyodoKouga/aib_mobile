@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../model/profile_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileViewModel extends StateNotifier<ProfileState> {
   final ImagePicker _imagePicker = ImagePicker();
@@ -98,6 +99,86 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
         isLoading: false,
         errorMessage: "メールアドレスの更新に失敗しました。",
       );
+    }
+  }
+
+  // メールアドレス変更API呼び出し
+  Future<bool> changeEmail({
+    required int userId,
+    required String password,
+    required String newEmail,
+  }) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final uri = Uri.parse('http://localhost:8000/update/update_email');
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user_id': userId,
+          'password': password,
+          'new_email': newEmail,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('email', newEmail);
+        state = state.copyWith(email: newEmail, isLoading: false);
+        return true;
+      } else {
+        final body = jsonDecode(response.body);
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: body['detail'] ?? 'メールアドレスの更新に失敗しました。',
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'メールアドレスの更新に失敗しました。',
+      );
+      return false;
+    }
+  }
+
+  // パスワード変更API呼び出し
+  Future<bool> changePassword({
+    required int userId,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final uri = Uri.parse('http://localhost:8000/update/update_password');
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user_id': userId,
+          'old_password': oldPassword,
+          'new_password': newPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        state = state.copyWith(isLoading: false);
+        return true;
+      } else {
+        final body = jsonDecode(response.body);
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: body['detail'] ?? 'パスワードの更新に失敗しました。',
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'パスワードの更新に失敗しました。',
+      );
+      return false;
     }
   }
 
