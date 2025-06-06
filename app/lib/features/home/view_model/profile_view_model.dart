@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../model/profile_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileViewModel extends StateNotifier<ProfileState> {
   final ImagePicker _imagePicker = ImagePicker();
@@ -75,6 +76,47 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
       state = state.copyWith(
         isLoading: false,
         errorMessage: "プロフィールの更新に失敗しました。",
+      );
+    }
+  }
+
+  /// ユーザー名のみを更新する（API & ローカル保存）
+  Future<void> updateUsername(int userId, String newUsername) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final uri = Uri.parse('http://localhost:8000/update/update_username');
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user_id': userId,
+          'new_username': newUsername,
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('サーバエラー: ${response.statusCode}');
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', newUsername);
+      final now = DateTime.now();
+      await prefs.setString('lastUpdated', now.toIso8601String());
+
+      final isGuest = newUsername == 'ゲスト';
+      await prefs.setBool('isGuest', isGuest);
+
+      state = state.copyWith(
+        username: newUsername,
+        isGuest: isGuest,
+        lastUpdated: now,
+        isLoading: false,
+        isProfileComplete: state.hasCompleteProfile,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: "ユーザー名の更新に失敗しました。",
       );
     }
   }

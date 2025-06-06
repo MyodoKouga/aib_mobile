@@ -28,6 +28,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     final profile = ref.watch(profileViewModelProvider);
     final profileNotifier = ref.read(profileViewModelProvider.notifier);
     final points = ref.watch(homeViewModelProvider).points;
+    final userId = ref.watch(homeViewModelProvider).userId;
 
     return Scaffold(
       backgroundColor: const Color(0xFFE0E5EC),
@@ -43,9 +44,34 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('ユーザー名', style: TextStyle(fontSize: 16.sp)),
-                    Text(
-                      profile.username.isEmpty ? 'ゲスト' : profile.username,
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                    Row(
+                      children: [
+                        Text(
+                          profile.username.isEmpty ? 'ゲスト' : profile.username,
+                          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 8.w),
+                        NeumorphicContainer(
+                          radius: 20,
+                          child: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => EditProfileDialog(
+                                  title: 'ユーザー名編集',
+                                  currentValue: profile.username,
+                                  onSave: (value) {
+                                    if (userId != null) {
+                                      profileNotifier.updateUsername(userId, value);
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
