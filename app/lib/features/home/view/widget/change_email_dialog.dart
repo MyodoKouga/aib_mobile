@@ -82,19 +82,20 @@ class _ChangeEmailDialogState extends ConsumerState<ChangeEmailDialog> {
                       password: password,
                       newEmail: newEmail,
                     );
-                    final updated = ref.read(profileViewModelProvider);
-                    if (mounted) {
+                    if (!mounted) return;
+                    if (success) {
+                      setState(() {
+                        _message = 'メールアドレスを変更しました。';
+                        _isSuccess = true;
+                      });
+                      await Future.delayed(const Duration(seconds: 1));
                       Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            success
-                                ? 'メールアドレスを変更しました'
-                                : updated.errorMessage ??
-                                    'メールアドレスの変更に失敗しました',
-                          ),
-                        ),
-                      );
+                    } else {
+                      setState(() {
+                        _message =
+                            ref.read(profileViewModelProvider).errorMessage;
+                        _isSuccess = false;
+                      });
                     }
                   }
                 },
