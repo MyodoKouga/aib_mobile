@@ -314,6 +314,10 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
       imageUploadError: null,
     );
   }
+
+  void setErrorMessage(String message) {
+    state = state.copyWith(errorMessage: message);
+  }
 }
 
 final profileViewModelProvider = StateNotifierProvider<ProfileViewModel, ProfileState>((ref) {

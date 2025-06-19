@@ -39,15 +39,12 @@ class _ChangeEmailDialogState extends ConsumerState<ChangeEmailDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (_message != null)
+            if (profileState.errorMessage != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Text(
-                  _message!,
-                  style: TextStyle(
-                    color: _isSuccess ? Colors.green : Colors.red,
-                    fontSize: 14,
-                  ),
+                  profileState.errorMessage!,
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
               ),
             TextField(
@@ -74,9 +71,15 @@ class _ChangeEmailDialogState extends ConsumerState<ChangeEmailDialog> {
               : () async {
                   final newEmail = _emailController.text.trim();
                   final password = _passwordController.text.trim();
-                  if (userId != null &&
-                      newEmail.isNotEmpty &&
-                      password.isNotEmpty) {
+                  if (newEmail.isEmpty || !newEmail.contains('@')) {
+                    notifier.setErrorMessage('正しいメールアドレスを入力してください。');
+                    return;
+                  }
+                  if (password.isEmpty || password.length < 6) {
+                    notifier.setErrorMessage('パスワードは6文字以上で入力してください。');
+                    return;
+                  }
+                  if (userId != null) {
                     final success = await notifier.changeEmail(
                       userId: userId,
                       password: password,
