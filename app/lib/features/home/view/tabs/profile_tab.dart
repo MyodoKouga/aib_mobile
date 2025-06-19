@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../view_model/profile_view_model.dart';
 import '../../view_model/home_view_model.dart';
-import '../widget/account_settings_dialog.dart';
+import '../widget/change_email_dialog.dart';
+import '../widget/change_password_dialog.dart';
 import '../widget/edit_profile_dialog.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
@@ -41,64 +42,101 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             children: [
               NeumorphicContainer(
                 padding: EdgeInsets.all(16.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   children: [
-                    Text('ユーザー名', style: TextStyle(fontSize: 16.sp)),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          profile.username.isEmpty ? 'ゲスト' : profile.username,
-                          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                        Text('ユーザー名', style: TextStyle(fontSize: 16.sp)),
+                        Row(
+                          children: [
+                            Text(
+                              profile.username.isEmpty ? 'ゲスト' : profile.username,
+                              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(width: 8.w),
+                            NeumorphicContainer(
+                              radius: 20,
+                              child: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => EditProfileDialog(
+                                      title: 'ユーザー名編集',
+                                      currentValue: profile.username,
+                                      onSave: (value) {
+                                        if (userId != null) {
+                                          profileNotifier.updateUsername(userId, value);
+                                        }
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 8.w),
-                        NeumorphicContainer(
-                          radius: 20,
-                          child: IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (_) => EditProfileDialog(
-                                  title: 'ユーザー名編集',
-                                  currentValue: profile.username,
-                                  onSave: (value) async {
-                                    if (userId != null) {
-                                      final success = await profileNotifier
-                                          .updateUsername(userId, value);
-                                      final updated =
-                                          ref.read(profileViewModelProvider);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            success
-                                                ? 'ユーザー名を更新しました'
-                                                : updated.errorMessage ??
-                                                    'ユーザー名の更新に失敗しました',
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              );
-                            },
-                          ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('メールアドレス', style: TextStyle(fontSize: 16.sp)),
+                        Row(
+                          children: [
+                            Text(
+                              profile.email,
+                              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(width: 8.w),
+                            NeumorphicContainer(
+                              radius: 20,
+                              child: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => const ChangeEmailDialog(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('パスワード', style: TextStyle(fontSize: 16.sp)),
+                        Row(
+                          children: [
+                            Text(
+                              '*****',
+                              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(width: 8.w),
+                            NeumorphicContainer(
+                              radius: 20,
+                              child: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => const ChangePasswordDialog(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: 24.h),
-              NeumorphicButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => const AccountSettingsDialog(),
-                  );
-                },
-                child: Text('ユーザー登録情報変更', style: TextStyle(fontSize: 16.sp)),
               ),
               SizedBox(height: 24.h),
               NeumorphicContainer(
