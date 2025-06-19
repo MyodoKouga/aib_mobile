@@ -6,6 +6,7 @@ import '../../view_model/home_view_model.dart';
 import '../widget/change_email_dialog.dart';
 import '../widget/change_password_dialog.dart';
 import '../widget/edit_profile_dialog.dart';
+import '../widget/exchange_point_modal.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_container.dart';
 import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 
@@ -154,8 +155,24 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               SizedBox(
                 width: double.infinity,
                 child: NeumorphicButton(
-                  onPressed: () {
-                    // ポイント交換処理
+                  onPressed: () async {
+                    final exchanged = await showDialog<int>(
+                      context: context,
+                      barrierDismissible: true,
+                      barrierColor: Colors.black.withOpacity(0.5),
+                      builder: (_) => AlertDialog(
+                        backgroundColor: Colors.transparent,
+                        insetPadding: const EdgeInsets.all(24),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        contentPadding: EdgeInsets.zero,
+                        content: const ExchangePointModal(),
+                      ),
+                    );
+                    if (exchanged != null) {
+                      ref.invalidate(homeViewModelProvider);
+                    }
                   },
                   child: Text('ポイントを交換する',
                       style: TextStyle(fontSize: 16.sp), textAlign: TextAlign.center),
