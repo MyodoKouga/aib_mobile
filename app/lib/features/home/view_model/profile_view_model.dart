@@ -174,9 +174,17 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
         return true;
       } else {
         final body = jsonDecode(response.body);
+        final detail = body['detail']?.toString() ?? '';
+        final isPasswordError = response.statusCode == 401 ||
+            detail.contains('password') ||
+            detail.contains('パスワード');
         state = state.copyWith(
           isLoading: false,
-          errorMessage: body['detail'] ?? 'メールアドレスの更新に失敗しました。',
+          errorMessage: isPasswordError
+              ? 'パスワードが間違っています'
+              : detail.isNotEmpty
+                  ? detail
+                  : 'メールアドレスの更新に失敗しました。',
         );
         return false;
       }
@@ -213,9 +221,17 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
         return true;
       } else {
         final body = jsonDecode(response.body);
+        final detail = body['detail']?.toString() ?? '';
+        final isPasswordError = response.statusCode == 401 ||
+            detail.contains('password') ||
+            detail.contains('パスワード');
         state = state.copyWith(
           isLoading: false,
-          errorMessage: body['detail'] ?? 'パスワードの更新に失敗しました。',
+          errorMessage: isPasswordError
+              ? 'パスワードが間違っています'
+              : detail.isNotEmpty
+                  ? detail
+                  : 'パスワードの更新に失敗しました。',
         );
         return false;
       }
