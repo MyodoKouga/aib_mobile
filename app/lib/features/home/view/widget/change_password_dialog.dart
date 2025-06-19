@@ -39,15 +39,12 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (_message != null)
+            if (profileState.errorMessage != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Text(
-                  _message!,
-                  style: TextStyle(
-                    color: _isSuccess ? Colors.green : Colors.red,
-                    fontSize: 14,
-                  ),
+                  profileState.errorMessage!,
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
               ),
             TextField(
@@ -75,9 +72,15 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
               : () async {
                   final oldPass = _oldPasswordController.text.trim();
                   final newPass = _newPasswordController.text.trim();
-                  if (userId != null &&
-                      oldPass.isNotEmpty &&
-                      newPass.isNotEmpty) {
+                  if (oldPass.isEmpty) {
+                    notifier.setErrorMessage('現在のパスワードを入力してください。');
+                    return;
+                  }
+                  if (newPass.isEmpty || newPass.length < 6) {
+                    notifier.setErrorMessage('新しいパスワードは6文字以上で入力してください。');
+                    return;
+                  }
+                  if (userId != null) {
                     final success = await notifier.changePassword(
                       userId: userId,
                       oldPassword: oldPass,
