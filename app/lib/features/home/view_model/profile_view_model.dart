@@ -81,7 +81,7 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
   }
 
   /// ユーザー名のみを更新する（API & ローカル保存）
-  Future<void> updateUsername(int userId, String newUsername) async {
+  Future<bool> updateUsername(int userId, String newUsername) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       final uri = Uri.parse('http://localhost:8000/update/update_username');
@@ -116,11 +116,13 @@ class ProfileViewModel extends StateNotifier<ProfileState> {
         isLoading: false,
         isProfileComplete: isProfileComplete,
       );
+      return true;
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: "ユーザー名の更新に失敗しました。",
       );
+      return false;
     }
   }
 

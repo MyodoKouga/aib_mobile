@@ -74,25 +74,27 @@ class _ChangeEmailDialogState extends ConsumerState<ChangeEmailDialog> {
               : () async {
                   final newEmail = _emailController.text.trim();
                   final password = _passwordController.text.trim();
-                  if (userId != null && newEmail.isNotEmpty && password.isNotEmpty) {
+                  if (userId != null &&
+                      newEmail.isNotEmpty &&
+                      password.isNotEmpty) {
                     final success = await notifier.changeEmail(
                       userId: userId,
                       password: password,
                       newEmail: newEmail,
                     );
-                    if (!mounted) return;
-                    if (success) {
-                      setState(() {
-                        _message = 'メールアドレスを変更しました。';
-                        _isSuccess = true;
-                      });
-                      await Future.delayed(const Duration(seconds: 1));
+                    final updated = ref.read(profileViewModelProvider);
+                    if (mounted) {
                       Navigator.pop(context);
-                    } else {
-                      setState(() {
-                        _message = ref.read(profileViewModelProvider).errorMessage;
-                        _isSuccess = false;
-                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            success
+                                ? 'メールアドレスを変更しました'
+                                : updated.errorMessage ??
+                                    'メールアドレスの変更に失敗しました',
+                          ),
+                        ),
+                      );
                     }
                   }
                 },

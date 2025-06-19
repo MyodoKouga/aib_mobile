@@ -5,7 +5,7 @@ import 'package:app/shared/widget/neumorphic/neumorphic_button.dart';
 class EditProfileDialog extends StatefulWidget {
   final String title;
   final String currentValue;
-  final Function(String) onSave;
+  final Future<void> Function(String) onSave;
 
   const EditProfileDialog({
     Key? key,
@@ -91,10 +91,12 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         NeumorphicButton(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           onPressed: (!isInputValid || !_hasChanges)
-              ? null // 無効な入力または変更がない場合は無効化
-              : () {
-                  widget.onSave(inputText);
-                  Navigator.pop(context);
+              ? null
+              : () async {
+                  await widget.onSave(inputText);
+                  if (mounted) {
+                    Navigator.pop(context);
+                  }
                 },
           child: const Text("保存"),
         ),
